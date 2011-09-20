@@ -1,0 +1,9 @@
+Application::Specification.new do |s|
+  s.name       = 'LightingPlanner'
+  s.identifier = 'com.benilovj.LightingPlanner'
+  s.version    = '1.0'
+  s.icon       = 'resources/HotCocoa.icns'
+  s.resources  = Dir.glob('resources/**/*.*')
+  s.sources    = Dir.glob('lib/**/*.rb')
+  s.embed_bs   = true
+end
