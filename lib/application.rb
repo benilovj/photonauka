@@ -94,10 +94,11 @@ class LightingPlanner
     application name: 'Lighting Planner' do |app|
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
+        win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
         win << view(frame: [0,0,200,200]) do |view|
           view.setWantsLayer(true)
           win << rotatable_image_view(frame: [50,50,100,100]) do |image_view|
-            image_view.file = NSBundle.mainBundle.pathForResource 'zoom_2x2_128_031', ofType:'png'
+            image_view.file = png_filename('zoom_2x2_128_031')
             image_view.addTrackingArea(tracking_area(rect: [0, 0, 10, 10],
                                                   options: [:mouse_entered_and_exited, :active_in_key_window],
                                                     owner: image_view ))
@@ -132,6 +133,15 @@ class LightingPlanner
 
   # window/bring_all_to_front
   def on_bring_all_to_front(menu)
+  end
+  
+  protected
+  def png_file(filename)
+    NSImage.alloc.initWithContentsOfFile(png_filename(filename))
+  end
+  
+  def png_filename(filename)
+    NSBundle.mainBundle.pathForResource filename, ofType:'png'
   end
 end
 
