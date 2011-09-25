@@ -30,16 +30,15 @@ end
 class RotatableImageView < NSView
   include HotCocoa::Mappings
 
-  INSET = 5
-  GRIP_DIAMETER = 6
-  GRIP_INSET = 2
+  IMAGE_INSET = 5
+  
+  GRIP_RADIUS = 3
+  BORDER_CORNER_INSET = 5
   
   def initWithFrame(frame)
     super
     unless self.nil?
-      self.addTrackingArea(HotCocoa.tracking_area(rect: [0, 0, 10, 10],
-                                               options: [:mouse_entered_and_exited, :active_in_key_window],
-                                                 owner: self ))
+      define_tracking_areas
     end
     self
   end
@@ -74,6 +73,14 @@ class RotatableImageView < NSView
   end
   
   protected
+  def define_tracking_areas
+    for square in squares_around(border_centers, radius: GRIP_RADIUS)
+      self.addTrackingArea(HotCocoa.tracking_area(rect: square,
+                                               options: [:mouse_entered_and_exited, :active_in_key_window],
+                                                 owner: self ))
+    end
+  end
+  
   def draw_image
     @image.drawInRect(bounds_with_insets, fromRect:NSZeroRect, operation:NSCompositeSourceOver, fraction:1.0)
   end
@@ -82,19 +89,31 @@ class RotatableImageView < NSView
     HotCocoa.color(name:"black").setStroke
     HotCocoa.color(name:"lightGray").setFill
     circlePath = NSBezierPath.bezierPath
-    grip_coordinates = [[GRIP_INSET, GRIP_INSET],
-                         [bounds.size.width - GRIP_DIAMETER - GRIP_INSET, GRIP_INSET],
-                         [bounds.size.width - GRIP_DIAMETER - GRIP_INSET, bounds.size.height - GRIP_DIAMETER - GRIP_INSET],
-                         [GRIP_INSET, bounds.size.height - GRIP_DIAMETER - GRIP_INSET]]
-    grip_coordinates.each do |x, y|
-      circlePath.appendBezierPathWithOvalInRect(CGRectMake(x, y, GRIP_DIAMETER, GRIP_DIAMETER))
+    grip_rectangles.each do |rect|
+      circlePath.appendBezierPathWithOvalInRect(rect)
       circlePath.stroke
       circlePath.fill
     end
   end
   
+  def grip_rectangles
+    squares_around(border_centers, radius: GRIP_RADIUS)
+  end
+  
+  def squares_around(points, radius:radius)
+    points.collect {|point| CGRectMake(point.x - radius, point.y - radius, 2 * radius, 2 * radius) }
+  end
+  
+  def border_centers
+    [[BORDER_CORNER_INSET, BORDER_CORNER_INSET],
+     [bounds.size.width - BORDER_CORNER_INSET, BORDER_CORNER_INSET],
+     [bounds.size.width - BORDER_CORNER_INSET, bounds.size.height - BORDER_CORNER_INSET],
+     [BORDER_CORNER_INSET, bounds.size.height - BORDER_CORNER_INSET]
+    ].collect {|x, y| NSMakePoint(x, y)}
+  end
+  
   def bounds_with_insets
-    NSMakeRect(INSET, INSET, bounds.size.width - 2*INSET, bounds.size.height - 2*INSET)
+    NSMakeRect(IMAGE_INSET, IMAGE_INSET, bounds.size.width - 2*IMAGE_INSET, bounds.size.height - 2*IMAGE_INSET)
   end
   
   def update_cursor
