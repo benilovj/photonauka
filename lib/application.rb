@@ -78,7 +78,6 @@ class RotatableImageView < NSView
   
   def drawRect(rect)
     draw_image
-    draw_border
     draw_rotation_grips
   end
   
@@ -97,14 +96,6 @@ class RotatableImageView < NSView
             fromRect: NSZeroRect,
            operation: NSCompositeSourceOver,
             fraction: 1.0)
-  end
-  
-  def draw_border
-    path = NSBezierPath.bezierPathWithRect(bounds_with_inset(BORDER_INSET))
-    path.setLineWidth(4)
-    path.setLineDash([3], count: 1, phase: 1)
-    HotCocoa.color(rgb: 0x7995E8).setStroke
-    path.stroke
   end
   
   def draw_rotation_grips
