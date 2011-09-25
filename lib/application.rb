@@ -9,6 +9,16 @@ class CGRect
      [origin.x, origin.y + size.height]
      ].map {|x,y| NSMakePoint(x,y)}
   end
+  
+  def with_inset(inset)
+    NSMakeRect(origin.x + inset, origin.y + inset, size.width - 2*inset, size.height - 2*inset)
+  end
+  
+  class << self
+    def square_with_center(center, side_length: length)
+      NSMakeRect(center.x - length / 2, center.y - length / 2, length, length)
+    end
+  end
 end
 
 HotCocoa::Mappings.map tracking_area: NSTrackingArea do
@@ -83,7 +93,7 @@ class RotatableImageView < NSView
   
   protected
   def define_tracking_areas
-    squares = border_corners.map {|point| square_around(point, radius: GRIP_RADIUS)}
+    squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 2*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
                                                options: [:mouse_entered_and_exited, :active_in_key_window],
@@ -92,7 +102,7 @@ class RotatableImageView < NSView
   end
   
   def draw_image
-    @image.drawInRect(bounds_with_inset(IMAGE_INSET),
+    @image.drawInRect(bounds.with_inset(IMAGE_INSET),
             fromRect: NSZeroRect,
            operation: NSCompositeSourceOver,
             fraction: 1.0)
@@ -103,7 +113,7 @@ class RotatableImageView < NSView
   end
 
   def border_corners
-    bounds_with_inset(BORDER_INSET).corner_points
+    bounds.with_inset(BORDER_INSET).corner_points
   end
 
   def draw_grip_at(point)
@@ -113,14 +123,6 @@ class RotatableImageView < NSView
     circlePath.appendBezierPathWithArcWithCenter(point, radius: GRIP_RADIUS, startAngle: 0, endAngle:360)
     circlePath.stroke
     circlePath.fill
-  end
-  
-  def square_around(point, radius: radius)
-    CGRectMake(point.x - radius, point.y - radius, 2 * radius, 2 * radius)
-  end
-  
-  def bounds_with_inset(inset)
-    NSMakeRect(inset, inset, bounds.size.width - 2*inset, bounds.size.height - 2*inset)
   end
   
   def update_cursor
