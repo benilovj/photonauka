@@ -28,6 +28,22 @@ HotCocoa::Mappings.map tracking_area: NSTrackingArea do
 end
 
 class RotatableImageView < NSView
+  include HotCocoa::Mappings
+
+  INSET = 5
+  GRIP_DIAMETER = 6
+  GRIP_INSET = 2
+  
+  def initWithFrame(frame)
+    super
+    unless self.nil?
+      self.addTrackingArea(HotCocoa.tracking_area(rect: [0, 0, 10, 10],
+                                               options: [:mouse_entered_and_exited, :active_in_key_window],
+                                                 owner: self ))
+    end
+    self
+  end
+  
   def mouseEntered(event)
     @in_area = true
     update_cursor
@@ -48,27 +64,39 @@ class RotatableImageView < NSView
     update_cursor
   end
   
-  def file=(file)
-    @image = NSImage.alloc.initWithContentsOfFile file
+  def filename=(filename)
+    @image = NSImage.alloc.initWithContentsOfFile filename
   end
   
   def drawRect(rect)
-    @image.drawInRect(bounds, fromRect:NSZeroRect, operation:NSCompositeSourceOver, fraction:1.0)
-    NSColor.blackColor.setStroke
-    NSColor.lightGrayColor.setFill
+    draw_image
+    draw_rotation_grips
+  end
+  
+  protected
+  def draw_image
+    @image.drawInRect(bounds_with_insets, fromRect:NSZeroRect, operation:NSCompositeSourceOver, fraction:1.0)
+  end
+  
+  def draw_rotation_grips
+    HotCocoa.color(name:"black").setStroke
+    HotCocoa.color(name:"lightGray").setFill
     circlePath = NSBezierPath.bezierPath
-    point_coordinates = [[2,2],
-                         [bounds.size.width - 10, 2],
-                         [bounds.size.width - 10, bounds.size.height - 10],
-                         [2, bounds.size.height - 10]]
-    point_coordinates.each do |x, y|
-      circlePath.appendBezierPathWithOvalInRect(CGRectMake(x, y, 8, 8))
+    grip_coordinates = [[GRIP_INSET, GRIP_INSET],
+                         [bounds.size.width - GRIP_DIAMETER - GRIP_INSET, GRIP_INSET],
+                         [bounds.size.width - GRIP_DIAMETER - GRIP_INSET, bounds.size.height - GRIP_DIAMETER - GRIP_INSET],
+                         [GRIP_INSET, bounds.size.height - GRIP_DIAMETER - GRIP_INSET]]
+    grip_coordinates.each do |x, y|
+      circlePath.appendBezierPathWithOvalInRect(CGRectMake(x, y, GRIP_DIAMETER, GRIP_DIAMETER))
       circlePath.stroke
       circlePath.fill
     end
   end
   
-  protected
+  def bounds_with_insets
+    NSMakeRect(INSET, INSET, bounds.size.width - 2*INSET, bounds.size.height - 2*INSET)
+  end
+  
   def update_cursor
     cursor = case
     when (@in_area and @mousedown) then rotate_cursor
@@ -93,7 +121,9 @@ HotCocoa::Mappings.map rotatable_image_view: RotatableImageView do
   defaults frame: CGRectZero
 
   def init_with_options image_view, options
-    image_view.initWithFrame options.delete :frame
+    view = image_view.initWithFrame options.delete :frame
+    view.filename = options.delete(:image_filename)
+    view
   end
 end
 
@@ -107,11 +137,8 @@ class LightingPlanner
         win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
         win << view(frame: [0,0,200,200]) do |view|
           view.setWantsLayer(true)
-          win << rotatable_image_view(frame: [50,50,100,100]) do |image_view|
-            image_view.file = png_filename('zoom_2x2_128_031')
-            image_view.addTrackingArea(tracking_area(rect: [0, 0, 10, 10],
-                                                  options: [:mouse_entered_and_exited, :active_in_key_window],
-                                                    owner: image_view ))
+          win << rotatable_image_view(frame: [50,50,100,100], 
+                             image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
             image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
           end
         end

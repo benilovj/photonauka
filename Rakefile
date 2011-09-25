@@ -29,4 +29,4 @@ task :dmg => :deploy do
   sh "hdiutil create -srcfolder LightingPlanner.app LightingPlanner.dmg"
 end
 
-task :default => [:run]
+task :default => [:clean, :run]
