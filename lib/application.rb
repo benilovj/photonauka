@@ -1,6 +1,16 @@
 require 'rubygems' # disable this for a deployed application
 require 'hotcocoa'
 
+class CGRect
+  def corner_points
+    [[origin.x, origin.y], 
+     [origin.x + size.width, origin.y],
+     [origin.x + size.width, origin.y + size.height],
+     [origin.x, origin.y + size.height]
+     ].map {|x,y| NSMakePoint(x,y)}
+  end
+end
+
 HotCocoa::Mappings.map tracking_area: NSTrackingArea do
   defaults rect: CGRectZero
 
@@ -19,7 +29,6 @@ HotCocoa::Mappings.map tracking_area: NSTrackingArea do
   
   def init_with_options tracking_area, options
     rect = options.delete(:rect)
-    rect = CGRectMake(*rect) if rect.is_a?(Array)
     tracking_area.initWithRect rect,
                       options: options.delete(:options),
                         owner: options.delete(:owner),
@@ -33,7 +42,7 @@ class RotatableImageView < NSView
   IMAGE_INSET = 5
   
   GRIP_RADIUS = 3
-  BORDER_CORNER_INSET = 5
+  BORDER_INSET = IMAGE_INSET
   
   def initWithFrame(frame)
     super
@@ -69,12 +78,14 @@ class RotatableImageView < NSView
   
   def drawRect(rect)
     draw_image
+    draw_border
     draw_rotation_grips
   end
   
   protected
   def define_tracking_areas
-    for square in squares_around(border_centers, radius: GRIP_RADIUS)
+    squares = border_corners.map {|point| square_around(point, radius: GRIP_RADIUS)}
+    for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
                                                options: [:mouse_entered_and_exited, :active_in_key_window],
                                                  owner: self ))
@@ -82,38 +93,43 @@ class RotatableImageView < NSView
   end
   
   def draw_image
-    @image.drawInRect(bounds_with_insets, fromRect:NSZeroRect, operation:NSCompositeSourceOver, fraction:1.0)
+    @image.drawInRect(bounds_with_inset(IMAGE_INSET),
+            fromRect: NSZeroRect,
+           operation: NSCompositeSourceOver,
+            fraction: 1.0)
+  end
+  
+  def draw_border
+    path = NSBezierPath.bezierPathWithRect(bounds_with_inset(BORDER_INSET))
+    path.setLineWidth(4)
+    path.setLineDash([3], count: 1, phase: 1)
+    HotCocoa.color(rgb: 0x7995E8).setStroke
+    path.stroke
   end
   
   def draw_rotation_grips
+    border_corners.each {|corner| draw_grip_at(corner) }
+  end
+
+  def border_corners
+    bounds_with_inset(BORDER_INSET).corner_points
+  end
+
+  def draw_grip_at(point)
     HotCocoa.color(name:"black").setStroke
     HotCocoa.color(name:"lightGray").setFill
     circlePath = NSBezierPath.bezierPath
-    grip_rectangles.each do |rect|
-      circlePath.appendBezierPathWithOvalInRect(rect)
-      circlePath.stroke
-      circlePath.fill
-    end
+    circlePath.appendBezierPathWithArcWithCenter(point, radius: GRIP_RADIUS, startAngle: 0, endAngle:360)
+    circlePath.stroke
+    circlePath.fill
   end
   
-  def grip_rectangles
-    squares_around(border_centers, radius: GRIP_RADIUS)
+  def square_around(point, radius: radius)
+    CGRectMake(point.x - radius, point.y - radius, 2 * radius, 2 * radius)
   end
   
-  def squares_around(points, radius:radius)
-    points.collect {|point| CGRectMake(point.x - radius, point.y - radius, 2 * radius, 2 * radius) }
-  end
-  
-  def border_centers
-    [[BORDER_CORNER_INSET, BORDER_CORNER_INSET],
-     [bounds.size.width - BORDER_CORNER_INSET, BORDER_CORNER_INSET],
-     [bounds.size.width - BORDER_CORNER_INSET, bounds.size.height - BORDER_CORNER_INSET],
-     [BORDER_CORNER_INSET, bounds.size.height - BORDER_CORNER_INSET]
-    ].collect {|x, y| NSMakePoint(x, y)}
-  end
-  
-  def bounds_with_insets
-    NSMakeRect(IMAGE_INSET, IMAGE_INSET, bounds.size.width - 2*IMAGE_INSET, bounds.size.height - 2*IMAGE_INSET)
+  def bounds_with_inset(inset)
+    NSMakeRect(inset, inset, bounds.size.width - 2*inset, bounds.size.height - 2*inset)
   end
   
   def update_cursor
