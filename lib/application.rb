@@ -47,8 +47,6 @@ HotCocoa::Mappings.map tracking_area: NSTrackingArea do
 end
 
 class RotatableImageView < NSView
-  include HotCocoa::Mappings
-
   IMAGE_INSET = 5
   
   GRIP_RADIUS = 3
