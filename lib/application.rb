@@ -141,7 +141,7 @@ class RotatableImageView < NSView
   def load_rotate_cursor
     image_name = NSBundle.mainBundle.pathForResource 'rotate_cursor', ofType:'png'
     image = NSImage.alloc.initWithContentsOfFile(image_name)
-    NSCursor.alloc.initWithImage(image, hotSpot:NSMakePoint(7,7))
+    NSCursor.alloc.initWithImage(image, hotSpot:[7,7])
   end
 end
 
