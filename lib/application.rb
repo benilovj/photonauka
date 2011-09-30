@@ -128,12 +128,16 @@ class RotatableImageView < NSView
   
   def selected=(should_be_selected)
     if @selected and not should_be_selected
-      tracking_areas.each {|area| removeTrackingArea(area)}
+      self.trackingAreas.each {|area| removeTrackingArea(area)}
     elsif not @selected and should_be_selected
       define_tracking_areas(@rotation_handler)
     end
     @selected = should_be_selected
     setNeedsDisplay(true)
+  end
+  
+  def deselect
+    self.selected = false
   end
   
   protected
@@ -168,6 +172,17 @@ class RotatableImageView < NSView
     circlePath.appendBezierPathWithArcWithCenter(point, radius: GRIP_RADIUS, startAngle: 0, endAngle:360)
     circlePath.stroke
     circlePath.fill
+  end
+end
+
+class FloorPlanView < NSView
+  def mouseDown(event)
+    deselect_rotatable_images
+  end
+  
+  protected
+  def deselect_rotatable_images
+    subviews.select {|view| view.is_a?(RotatableImageView)}.map(&:deselect)
   end
 end
 
@@ -206,6 +221,14 @@ HotCocoa::Mappings.map rotatable_image_view: RotatableImageView do
   end
 end
 
+HotCocoa::Mappings.map floorplan_view: FloorPlanView do
+  defaults frame: CGRectZero
+
+  def init_with_options view, options
+    view.initWithFrame options.delete :frame
+  end
+end
+
 class LightingPlanner
   include HotCocoa
 
@@ -214,9 +237,8 @@ class LightingPlanner
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
         win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
-        win.view = view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
+        win.view = floorplan_view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
           view.setWantsLayer(true)
-          view.setAutoresizesSubviews(true)
           view << rotatable_image_view(frame: [50,50,100,100],
                               image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
             image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
