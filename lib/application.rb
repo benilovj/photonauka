@@ -46,19 +46,8 @@ HotCocoa::Mappings.map tracking_area: NSTrackingArea do
   end
 end
 
-class RotatableImageView < NSView
-  IMAGE_INSET = 5
-  
-  GRIP_RADIUS = 3
-  BORDER_INSET = IMAGE_INSET
-  
+class RotationEventResponder
   attr_writer :delegate
-  
-  def initWithFrame(frame)
-    super
-    define_tracking_areas unless self.nil?
-    self
-  end
   
   def mouseEntered(event)
     @cursor_over_grip = true
@@ -73,15 +62,53 @@ class RotatableImageView < NSView
   def mouseDown(event)
     @mouse_pressed = true
     fire_events_if_needed
-    
-    @initialLocation = event.locationInWindow
-    @initialLocation.x -= frame.origin.x
-    @initialLocation.y -= frame.origin.y
   end
   
   def mouseUp(event)
     @mouse_pressed = false
     fire_events_if_needed
+  end
+  
+  protected
+  def fire_events_if_needed
+    unless @delegate.nil?
+      case
+      when (@cursor_over_grip and @mouse_pressed) then @delegate.rotation_started
+      when (@cursor_over_grip and not @mouse_pressed) then @delegate.mouse_over_grip
+      else @delegate.rotation_finished
+      end
+    end
+  end
+end
+
+class RotatableImageView < NSView
+  IMAGE_INSET = 5
+  
+  GRIP_RADIUS = 3
+  BORDER_INSET = IMAGE_INSET
+  
+  attr_writer :delegate
+  
+  def initWithFrame(frame)
+    super
+    unless self.nil?
+      self.selected = false
+      @rotation_handler = RotationEventResponder.new
+    end
+    self
+  end
+  
+  def delegate=(delegate)
+    @delegate = delegate
+    @rotation_handler.delegate = delegate
+  end
+  
+  def mouseDown(event)
+    @initialLocation = event.locationInWindow
+    @initialLocation.x -= frame.origin.x
+    @initialLocation.y -= frame.origin.y
+    
+    self.selected = true
   end
   
   def mouseDragged(event)
@@ -96,16 +123,26 @@ class RotatableImageView < NSView
   
   def drawRect(rect)
     draw_image
-    draw_rotation_grips
+    draw_rotation_grips if @selected
+  end
+  
+  def selected=(should_be_selected)
+    if @selected and not should_be_selected
+      tracking_areas.each {|area| removeTrackingArea(area)}
+    elsif not @selected and should_be_selected
+      define_tracking_areas(@rotation_handler)
+    end
+    @selected = should_be_selected
+    setNeedsDisplay(true)
   end
   
   protected
-  def define_tracking_areas
+  def define_tracking_areas(rotation_handler)
     squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 2*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
                                                options: [:mouse_entered_and_exited, :active_in_key_window],
-                                                 owner: self ))
+                                                 owner: rotation_handler ))
     end
   end
   
@@ -131,16 +168,6 @@ class RotatableImageView < NSView
     circlePath.appendBezierPathWithArcWithCenter(point, radius: GRIP_RADIUS, startAngle: 0, endAngle:360)
     circlePath.stroke
     circlePath.fill
-  end
-  
-  def fire_events_if_needed
-    unless @delegate.nil?
-      case
-      when (@cursor_over_grip and @mouse_pressed) then @delegate.rotation_started
-      when (@cursor_over_grip and not @mouse_pressed) then @delegate.mouse_over_grip
-      else @delegate.rotation_finished
-      end
-    end
   end
 end
 
@@ -187,13 +214,13 @@ class LightingPlanner
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
         win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
-        win << view(frame: [0,0,200,200]) do |view|
+        win.view = view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
           view.setWantsLayer(true)
-          rotatable_image_controller = RotatableImageController.new
-          win << rotatable_image_view(frame: [50,50,100,100], 
-                             image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
+          view.setAutoresizesSubviews(true)
+          view << rotatable_image_view(frame: [50,50,100,100],
+                              image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
             image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
-            image_view.delegate = rotatable_image_controller
+            image_view.delegate = RotatableImageController.new
           end
         end
 
