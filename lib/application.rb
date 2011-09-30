@@ -52,33 +52,32 @@ class RotatableImageView < NSView
   GRIP_RADIUS = 3
   BORDER_INSET = IMAGE_INSET
   
+  attr_writer :delegate
+  
   def initWithFrame(frame)
     super
-    unless self.nil?
-      define_tracking_areas
-      @rotate_cursor = load_rotate_cursor
-    end
+    define_tracking_areas unless self.nil?
     self
   end
   
   def mouseEntered(event)
-    @in_area = true
-    update_cursor
+    @cursor_over_grip = true
+    fire_events_if_needed
   end
 
   def mouseExited(event)
-    @in_area = false
-    update_cursor
+    @cursor_over_grip = false
+    fire_events_if_needed
   end
   
   def mouseDown(event)
-    @mousedown = true
-    update_cursor
+    @mouse_pressed = true
+    fire_events_if_needed
   end
   
   def mouseUp(event)
-    @mousedown = false
-    update_cursor
+    @mouse_pressed = false
+    fire_events_if_needed
   end
   
   def filename=(filename)
@@ -124,13 +123,33 @@ class RotatableImageView < NSView
     circlePath.fill
   end
   
-  def update_cursor
-    cursor = case
-    when (@in_area and @mousedown) then @rotate_cursor
-    when (@in_area and not @mousedown) then NSCursor.openHandCursor
-    else NSCursor.arrowCursor
+  def fire_events_if_needed
+    unless @delegate.nil?
+      case
+      when (@cursor_over_grip and @mouse_pressed) then @delegate.rotation_started
+      when (@cursor_over_grip and not @mouse_pressed) then @delegate.mouse_over_grip
+      else @delegate.rotation_finished
+      end
     end
-    cursor.set
+  end
+end
+
+class RotatableImageController
+  def rotation_started
+    rotate_cursor.set
+  end
+  
+  def rotation_finished
+    NSCursor.arrowCursor.set
+  end
+  
+  def mouse_over_grip
+    NSCursor.openHandCursor.set
+  end
+  
+  protected
+  def rotate_cursor
+    @rotate_cursor ||= load_rotate_cursor
   end
   
   def load_rotate_cursor
@@ -160,9 +179,11 @@ class LightingPlanner
         win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
         win << view(frame: [0,0,200,200]) do |view|
           view.setWantsLayer(true)
+          rotatable_image_controller = RotatableImageController.new
           win << rotatable_image_view(frame: [50,50,100,100], 
                              image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
             image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
+            image_view.delegate = rotatable_image_controller
           end
         end
 
