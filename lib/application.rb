@@ -47,8 +47,6 @@ HotCocoa::Mappings.map tracking_area: NSTrackingArea do
 end
 
 class RotatableImageView < NSView
-  include HotCocoa::Mappings
-
   IMAGE_INSET = 5
   
   GRIP_RADIUS = 3
@@ -58,6 +56,7 @@ class RotatableImageView < NSView
     super
     unless self.nil?
       define_tracking_areas
+      @rotate_cursor = load_rotate_cursor
     end
     self
   end
@@ -127,15 +126,11 @@ class RotatableImageView < NSView
   
   def update_cursor
     cursor = case
-    when (@in_area and @mousedown) then rotate_cursor
+    when (@in_area and @mousedown) then @rotate_cursor
     when (@in_area and not @mousedown) then NSCursor.openHandCursor
     else NSCursor.arrowCursor
     end
     cursor.set
-  end
-  
-  def rotate_cursor
-    @rotate_cursor ||= load_rotate_cursor
   end
   
   def load_rotate_cursor
