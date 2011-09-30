@@ -73,11 +73,21 @@ class RotatableImageView < NSView
   def mouseDown(event)
     @mouse_pressed = true
     fire_events_if_needed
+    
+    @initialLocation = event.locationInWindow
+    @initialLocation.x -= frame.origin.x
+    @initialLocation.y -= frame.origin.y
   end
   
   def mouseUp(event)
     @mouse_pressed = false
     fire_events_if_needed
+  end
+  
+  def mouseDragged(event)
+    current_location = event.locationInWindow
+    new_origin = [current_location.x - @initialLocation.x, current_location.y - @initialLocation.y]
+    self.setFrameOrigin(new_origin)
   end
   
   def filename=(filename)
