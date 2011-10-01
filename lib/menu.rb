@@ -15,17 +15,7 @@ module HotCocoa
         apple.item :quit, title: "Quit #{NSApp.name}", key: 'q'
       end
       main.submenu :file do |file|
-        file.item :new, key: 'n'
-        file.item :open, key: 'o'
-      end
-      main.submenu :window do |win|
-        win.item :minimize, key: 'm'
-        win.item :zoom
-        win.separator
-        win.item :bring_all_to_front, title: 'Bring All to Front', key: 'o'
-      end
-      main.submenu :help do |help|
-        help.item :help, title: "#{NSApp.name} Help"
+        file.item :print, key: 'p'
       end
     end
   end
