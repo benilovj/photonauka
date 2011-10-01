@@ -1,7 +1,7 @@
 require 'rubygems' # disable this for a deployed application
 require 'hotcocoa'
 
-require File.join(File.dirname(__FILE__), 'document')
+require 'lib/document'
 
 class CGRect
   def corner_points
