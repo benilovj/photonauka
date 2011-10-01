@@ -254,23 +254,31 @@ class LightingPlanner
   include HotCocoa
   include PngImages
 
+  def initialize
+    @document = MyDocument.new
+  end
+
   def start
     application name: 'Lighting Planner' do |app|
       app.delegate = self
-      window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
-        # win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
+      @window = window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
         win.view = floor_plan_view
-
         win.will_close { exit }
       end
+      
+      @document.view = @window.view
+      @window.setWindowController(NSWindowController.new)
+      @window.windowController.setDocument(@document)
     end
+  end
+  
+  def on_save_as(menu)    
+    @document.saveDocumentAs(self)
   end
   
   # TODO: is this the right way of printing?
   def on_print(menu)
-    doc = MyDocument.new
-    doc.view = floor_plan_view
-    print_operation = doc.printOperationWithSettings({}, error:nil)
+    print_operation = @document.printOperationWithSettings({}, error:nil)
     
     print_operation.runOperationModalForWindow(application.mainWindow,
                     delegate:self,
@@ -279,7 +287,6 @@ class LightingPlanner
   end
   
   def printed(sender)
-    NSLog("post print")
   end
   
   protected
