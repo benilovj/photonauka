@@ -1,6 +1,8 @@
 require 'rubygems' # disable this for a deployed application
 require 'hotcocoa'
 
+require File.join(File.dirname(__FILE__), 'document')
+
 class CGRect
   def corner_points
     [[origin.x, origin.y], 
@@ -18,6 +20,16 @@ class CGRect
     def square_with_center(center, side_length: length)
       NSMakeRect(center.x - length / 2, center.y - length / 2, length, length)
     end
+  end
+end
+
+module PngImages
+  def png_file(filename)
+    NSImage.alloc.initWithContentsOfFile(png_filename(filename))
+  end
+  
+  def png_filename(filename)
+    NSBundle.mainBundle.pathForResource filename, ofType:'png'
   end
 end
 
@@ -176,8 +188,17 @@ class RotatableImageView < NSView
 end
 
 class FloorPlanView < NSView
+  include PngImages
+  
+  attr_writer :floor_plan
+  
   def mouseDown(event)
     deselect_rotatable_images
+  end
+  
+  def drawRect(rect)
+    NSColor.colorWithPatternImage(png_file('grid')).setFill
+    NSRectFill(bounds)
   end
   
   protected
@@ -231,37 +252,46 @@ end
 
 class LightingPlanner
   include HotCocoa
+  include PngImages
 
   def start
     application name: 'Lighting Planner' do |app|
       app.delegate = self
       window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
-        win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
-        win.view = floorplan_view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
-          view.setWantsLayer(true)
-          view << rotatable_image_view(frame: [50,50,100,100],
-                              image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
-            image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
-            image_view.delegate = RotatableImageController.new
-          end
-        end
+        # win.setBackgroundColor(NSColor.colorWithPatternImage(png_file('grid')))
+        win.view = floor_plan_view
 
         win.will_close { exit }
       end
     end
   end
   
+  # TODO: is this the right way of printing?
   def on_print(menu)
+    doc = MyDocument.new
+    doc.view = floor_plan_view
+    print_operation = doc.printOperationWithSettings({}, error:nil)
     
+    print_operation.runOperationModalForWindow(application.mainWindow,
+                    delegate:self,
+                    didRunSelector: "printed:",
+                    contextInfo: nil)
+  end
+  
+  def printed(sender)
+    NSLog("post print")
   end
   
   protected
-  def png_file(filename)
-    NSImage.alloc.initWithContentsOfFile(png_filename(filename))
-  end
-  
-  def png_filename(filename)
-    NSBundle.mainBundle.pathForResource filename, ofType:'png'
+  def floor_plan_view
+    floorplan_view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
+      view.setWantsLayer(true)
+      view << rotatable_image_view(frame: [50,50,100,100],
+                          image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
+        image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
+        image_view.delegate = RotatableImageController.new
+      end
+    end
   end
 end
 
