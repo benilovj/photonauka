@@ -23,10 +23,11 @@ task :clean do
   builder.remove_bundle_root
 end
 
-desc 'Create the dmg archive'
-task :dmg => :deploy do
-  rm_rf 'LightingPlanner.dmg'
-  sh "hdiutil create LightingPlanner.dmg -srcdir LightingPlanner.app -format UDZO -imagekey zlib-level=9"
+desc 'Create the dmg archive from the application bundle'
+task :dmg do
+  app_name = builder.spec.name
+  rm_rf "#{app_name}.dmg"
+  sh "hdiutil create #{app_name}.dmg -quiet -srcdir #{app_name}.app -format UDZO -imagekey zlib-level=9"
 end
 
-task :default => [:clean, :run]
+task :default => :run

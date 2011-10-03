@@ -6,4 +6,6 @@ Application::Specification.new do |s|
   s.resources  = Dir.glob('resources/**/*.*')
   s.sources    = Dir.glob('lib/**/*.rb')
   s.embed_bs   = true
+  s.overwrite  = true
+  s.stdlib     = false
 end
