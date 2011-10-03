@@ -24,7 +24,7 @@ task :clean do
 end
 
 desc 'Create the dmg archive from the application bundle'
-task :dmg do
+task :dmg => :deploy do
   app_name = builder.spec.name
   rm_rf "#{app_name}.dmg"
   sh "hdiutil create #{app_name}.dmg -quiet -srcdir #{app_name}.app -format UDZO -imagekey zlib-level=9"
