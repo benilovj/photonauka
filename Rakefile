@@ -26,9 +26,7 @@ end
 desc 'Create the dmg archive'
 task :dmg => :deploy do
   rm_rf 'LightingPlanner.dmg'
-  sh "hdiutil create -srcfolder LightingPlanner.app $TMPDIR/LightingPlanner.tmp.dmg"
-  sh "hdiutil convert $TMPDIR/LightingPlanner.tmp.dmg -format UDZO -imagekey zlib-level=9 -o LightingPlanner.dmg"
-  rm_rf File.join(ENV['TMPDIR'], 'LightingPlanner.tmp.dmg')
+  sh "hdiutil create LightingPlanner.dmg -srcdir LightingPlanner.app -format UDZO -imagekey zlib-level=9"
 end
 
 task :default => [:clean, :run]
