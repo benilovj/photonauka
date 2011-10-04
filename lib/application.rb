@@ -1,5 +1,5 @@
 begin
- require 'hotcocoa'
+  require 'hotcocoa'
 rescue LoadError
   require 'rubygems'
   require 'hotcocoa'
@@ -14,7 +14,7 @@ require 'lib/hotcocoa/mappings/appkit/rotatable_image_view'
 require 'lib/appkit/floor_plan_view'
 require 'lib/hotcocoa/mappings/appkit/floor_plan_view'
 
-class LightingPlanner
+class LightingSetup
   include HotCocoa
   include PngImages
 
@@ -23,9 +23,9 @@ class LightingPlanner
   end
 
   def start
-    application name: 'Lighting Planner' do |app|
+    application name: 'Lighting Setup' do |app|
       app.delegate = self
-      @window = window frame: [100, 100, 500, 500], title: 'Lighting Planner' do |win|
+      @window = window frame: [100, 100, 500, 500], title: 'Lighting Setup' do |win|
         win.view = floor_plan_view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
           view.setWantsLayer(true)
           view << rotatable_image_view(frame: [50,50,100,100],
@@ -61,4 +61,4 @@ class LightingPlanner
   end
 end
 
-LightingPlanner.new.start
+LightingSetup.new.start

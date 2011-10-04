@@ -1,6 +1,6 @@
 Application::Specification.new do |s|
-  s.name       = 'LightingPlanner'
-  s.identifier = 'com.benilovj.LightingPlanner'
+  s.name       = 'LightingSetup'
+  s.identifier = 'com.photonauka.LightingSetup'
   s.version    = '0.1'
   s.icon       = 'resources/MainIcon.icns'
   s.resources  = Dir.glob('resources/**/*.*')

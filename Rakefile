@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'hotcocoa/application/builder'
 
-builder = Application::Builder.new 'LightingPlanner.appspec'
+builder = Application::Builder.new 'LightingSetup.appspec'
 
 desc 'Build the application'
 task :build do
