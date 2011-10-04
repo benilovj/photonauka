@@ -1,5 +1,9 @@
-require 'rubygems'
-require 'hotcocoa'
+begin
+ require 'hotcocoa'
+rescue LoadError
+  require 'rubygems'
+  require 'hotcocoa'
+end
 
 require 'lib/core_extensions'
 require 'lib/document'
