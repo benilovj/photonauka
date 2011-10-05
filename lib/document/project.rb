@@ -1,4 +1,4 @@
-class MyDocument < NSDocument
+class Project < NSDocument
   attr_accessor :view
   
   def init

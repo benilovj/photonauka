@@ -6,7 +6,7 @@ rescue LoadError
 end
 
 require 'lib/core_extensions'
-require 'lib/document'
+require 'lib/document/project'
 
 require 'lib/appkit/rotatable_image_view'
 require 'lib/appkit/rotatable_image_controller'
@@ -19,7 +19,7 @@ class LightingSetup
   include PngImages
 
   def initialize
-    @document = MyDocument.new
+    @document = Project.new
   end
 
   def start
