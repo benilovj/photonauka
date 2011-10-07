@@ -23,7 +23,7 @@ class LightingSetup
   end
 
   def start
-    application name: 'Lighting Setup' do |app|
+    application name: 'Photonauka Lighting Setup' do |app|
       app.delegate = self
       @window = window frame: [100, 100, 500, 500], title: 'Lighting Setup' do |win|
         win.view = floor_plan_view(frame: [0,0,400,400], auto_resize: [:width, :height]) do |view|
