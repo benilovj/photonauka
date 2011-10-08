@@ -15,6 +15,8 @@ module HotCocoa
         apple.item :quit, title: "Quit #{NSApp.name}", key: 'q'
       end
       main.submenu :file do |file|
+        file.item :open, title: "Open...", key: 'o', modifiers: [:command]
+        file.separator
         file.item :save_as, title: "Save As...", key: 's', modifiers: [:command, :shift]
         file.separator
         file.item :print, key: 'p'

@@ -5,8 +5,6 @@ require 'lib/appkit/rotatable_image_view'
 class FloorPlanView < NSView
   include PngImages
   
-  attr_writer :floor_plan
-  
   def mouseDown(event)
     deselect_rotatable_images
   end
@@ -14,6 +12,19 @@ class FloorPlanView < NSView
   def drawRect(rect)
     NSColor.colorWithPatternImage(png_file('grid')).setFill
     NSRectFill(bounds)
+  end
+  
+  def floor_plan=(floor_plan)
+    remove_subviews
+    image_view = HotCocoa.rotatable_image_view(frame: [0,0,100,100],
+                                      image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
+      controller = RotatableImageController.new
+      controller.floor_plan = floor_plan
+      image_view.delegate = controller
+      image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
+      image_view.setFrameOrigin(floor_plan.position)
+    end
+    addSubview image_view
   end
   
   protected

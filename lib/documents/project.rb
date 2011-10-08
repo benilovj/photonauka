@@ -1,13 +1,6 @@
 class Project < NSDocument
   attr_accessor :view
-  
-  def init
-    super
-  end
-  
-  def updateUI
-    @view.setFloorPlan @floor_plan
-  end
+  attr_accessor :floor_plan
   
   def dataOfType(type, error:outError)
     NSKeyedArchiver.archivedDataWithRootObject @floor_plan
@@ -15,11 +8,20 @@ class Project < NSDocument
 
   def readFromData(data, ofType:type, error:outError)
     @floor_plan = NSKeyedUnarchiver.unarchiveObjectWithData data
-    updateUI if @view
     true
   end
   
   def printOperationWithSettings(printSettings, error:outError)
     NSPrintOperation.printOperationWithView @view, printInfo:printInfo
+  end
+  
+  def view=(view)
+    @view = view
+    update_ui
+  end
+  
+  protected
+  def update_ui
+    @view.floor_plan = @floor_plan
   end
 end

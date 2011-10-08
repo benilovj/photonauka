@@ -1,4 +1,6 @@
 class RotatableImageController
+  attr_writer :floor_plan
+  
   def rotation_started
     rotate_cursor.set
   end
@@ -9,6 +11,10 @@ class RotatableImageController
   
   def mouse_over_grip
     NSCursor.openHandCursor.set
+  end
+  
+  def moved_to(new_location)
+    @floor_plan.position = new_location
   end
   
   protected

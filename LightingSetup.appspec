@@ -8,12 +8,11 @@ Application::Specification.new do |s|
   s.embed_bs   = true
   s.overwrite  = true
   s.stdlib     = false
-
-#          CFBundleDocumentTypes: [{
-#          CFBundleTypeExtensions:      ["floorplan"],
-#          CFBundleTypeIconFile:        "MainIcon.icns",
-#          CFBundleTypeName:            "LightingSetupProject",
-#          CFBundleTypeRole:            "Editor",
-#          NSDocumentClass:             "FloorPlan"
-#        }]
+  s.doc_types =  [{
+         CFBundleTypeExtensions:      ["floorplan"],
+         CFBundleTypeIconFile:        "MainIcon.icns",
+         CFBundleTypeName:            "LightingSetupProject",
+         CFBundleTypeRole:            "Editor",
+         NSDocumentClass:             "Project"
+       }]
 end
