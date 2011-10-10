@@ -9,7 +9,7 @@ Application::Specification.new do |s|
   s.overwrite  = true
   s.stdlib     = false
   s.doc_types =  [{
-         CFBundleTypeExtensions:      ["floorplan"],
+         CFBundleTypeExtensions:      ["light"],
          CFBundleTypeIconFile:        "MainIcon.icns",
          CFBundleTypeName:            "LightingSetupProject",
          CFBundleTypeRole:            "Editor",
