@@ -8,11 +8,12 @@ Application::Specification.new do |s|
   s.embed_bs   = true
   s.overwrite  = true
   s.stdlib     = false
-  s.doc_types =  [{
-         CFBundleTypeExtensions:      ["light"],
-         CFBundleTypeIconFile:        "MainIcon.icns",
-         CFBundleTypeName:            "LightingSetupProject",
-         CFBundleTypeRole:            "Editor",
-         NSDocumentClass:             "Project"
-       }]
+  
+  s.declare_doc_type do |doc_type|
+    doc_type.extensions = ["light"]
+    doc_type.icon       = "MainIcon.icns"
+    doc_type.name       = "LightingSetupProject"
+    doc_type.role       = :editor
+    doc_type.class      = "Project"
+  end
 end
