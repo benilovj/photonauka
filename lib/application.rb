@@ -37,8 +37,6 @@ class LightingSetup
       end
       
       @project.view = @window.view
-      @window.setWindowController(NSWindowController.new)
-      @window.windowController.setDocument(@project)
     end
   end
   

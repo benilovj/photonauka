@@ -20,6 +20,10 @@ class Project < NSDocument
     update_ui
   end
   
+  def makeWindowControllers
+    addWindowController(NSWindowController.new)
+  end
+  
   protected
   def update_ui
     @view.floor_plan = @floor_plan
