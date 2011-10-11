@@ -47,10 +47,12 @@ class LightingSetup
   # TODO: this feels very very hacky
   # also, why doesn't doc controller manage the currentDocument properly?
   def on_open(menu)
-    doc_controller.removeDocument(@project)
     doc_controller.openDocument(self)
-    @project = doc_controller.documents.first
-    @project.view = @window.view
+    if doc_controller.documents.size == 2
+      doc_controller.removeDocument(@project)
+      @project = doc_controller.documents.first
+      @project.view = @window.view
+    end
   end
   
   # TODO: is this the right way of printing?
