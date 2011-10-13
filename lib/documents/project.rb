@@ -1,6 +1,16 @@
+require 'lib/models/floor_plan'
+require 'lib/appkit/project_window_factory'
+
 class Project < NSDocument
-  attr_accessor :view
+  include ProjectWindowFactory
+  
   attr_accessor :floor_plan
+  
+  def init
+    super
+    @floor_plan = FloorPlan.new
+    self
+  end
   
   def dataOfType(type, error:outError)
     NSKeyedArchiver.archivedDataWithRootObject @floor_plan
@@ -15,13 +25,12 @@ class Project < NSDocument
     NSPrintOperation.printOperationWithView @view, printInfo:printInfo
   end
   
-  def view=(view)
-    @view = view
-    update_ui
-  end
-  
   def makeWindowControllers
-    addWindowController(NSWindowController.new)
+    new_window = make_project_window
+    NSLog("window visible: #{new_window.isVisible}")
+    @view = new_window.view
+    update_ui
+    addWindowController(NSWindowController.alloc.initWithWindow(new_window))
   end
   
   protected

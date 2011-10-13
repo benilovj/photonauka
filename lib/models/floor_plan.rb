@@ -2,7 +2,7 @@ class FloorPlan
   attr_accessor :position
   
   def initialize
-    @position = NSMakePoint(100,100)
+    @position = NSPoint.new(100,100)
   end
   
   def encodeWithCoder(c)
@@ -11,7 +11,7 @@ class FloorPlan
   
   def initWithCoder(c)
     coords = c.decodeObjectForKey('position')
-    @position = NSMakePoint(coords.first, coords.last)
+    @position = NSPoint.new(coords.first, coords.last)
     self
   end
   

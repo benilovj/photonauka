@@ -1,6 +1,9 @@
 framework 'Cocoa'
+
+require 'lib/hotcocoa/mappings/appkit/rotatable_image_view'
+
+require 'lib/appkit/rotatable_image_controller'
 require 'lib/appkit/png_images'
-require 'lib/appkit/rotatable_image_view'
 
 class FloorPlanView < NSView
   include PngImages

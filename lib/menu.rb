@@ -15,11 +15,14 @@ module HotCocoa
         apple.item :quit, title: "Quit #{NSApp.name}", key: 'q'
       end
       main.submenu :file do |file|
-        file.item :open, title: "Open...", key: 'o', modifiers: [:command]
+        file.item :new, title: "New", key: 'n', action: 'newDocument:'
+        file.item :open, title: "Open...", key: 'o', action: 'openDocument:'
         file.separator
-        file.item :save_as, title: "Save As...", key: 's', modifiers: [:command, :shift]
+        file.item :close, title: "Close", key: 'w', action: 'performClose:'
+        file.item :save, title: "Save", key: 's', action: 'saveDocument:'
+        file.item :save_as, title: "Save As...", key: 's', modifiers: [:command, :shift], action: 'saveDocumentAs:'
         file.separator
-        file.item :print, key: 'p'
+        file.item :print, key: 'p', action: 'printDocument:'
       end
     end
   end
