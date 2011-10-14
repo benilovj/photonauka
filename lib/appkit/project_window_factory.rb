@@ -4,7 +4,7 @@ class ProjectWindowFactory
   include HotCocoa
   
   def initialize
-    @window_cascade_point = NSPoint.new(0,0)
+    @window_cascade_point = NSPoint.new(1,1)
   end
   
   class << self
@@ -17,11 +17,11 @@ class ProjectWindowFactory
   end
   
   def make_new_window
-    window do |win|
-      win.view = floor_plan_view(frame: [@window_cascade_point.x, @window_cascade_point.y, 500, 500], auto_resize: [:width, :height]) do |view|
+    window(frame: [@window_cascade_point.x, @window_cascade_point.y, 500, 500]) do |win|
+      @window_cascade_point = win.cascadeTopLeftFromPoint(@window_cascade_point)
+      win.view = floor_plan_view(auto_resize: [:width, :height]) do |view|
         view.setWantsLayer(true)
       end
-      @window_cascade_point = win.cascadeTopLeftFromPoint(@window_cascade_point)
     end
   end
 end
