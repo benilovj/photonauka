@@ -1,0 +1,15 @@
+"apple:about"       = "О программе Фотонаука";
+"apple:preferences" = "Настройки";
+"apple:services"    = "Службы";
+"apple:hide"        = "Скрыть Фотонауку";
+"apple:hide_others" = "Скрыть остальные";
+"apple:show_all"    = "Показать все";
+"apple:quit"        = "Завершить Фотонауку";
+
+"file"         = "Файл";
+"file:new"     = "Новый";
+"file:open"    = "Открыть...";
+"file:close"   = "Закрыть";
+"file:save"    = "Сохранить";
+"file:save_as" = "Сохрабить как...";
+"file:print"   = "Напечатать...";

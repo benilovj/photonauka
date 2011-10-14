@@ -1,0 +1,3 @@
+To test the i18n support:
+
+  LightingSetup.app/Contents/MacOS/LightingSetup -AppleLanguages '(ru)'

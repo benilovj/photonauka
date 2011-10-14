@@ -1,28 +1,34 @@
+module I18n
+  def self.t key
+    NSBundle.mainBundle.localizedStringForKey(key, value: nil, table: nil)
+  end
+end
+
 module HotCocoa
   def application_menu
     menu do |main|
       main.submenu :apple do |apple|
-        apple.item :about, title: "About #{NSApp.name}"
+        apple.item :about, title: I18n.t("apple:about")
         apple.separator
-        apple.item :preferences, key: ','
+        apple.item :preferences, title: I18n.t("apple:preferences"), key: ','
         apple.separator
-        apple.submenu :services
+        apple.submenu :services, title: I18n.t("apple:services")
         apple.separator
-        apple.item :hide, title: "Hide #{NSApp.name}", key: 'h'
-        apple.item :hide_others, title: 'Hide Others', key: 'h', modifiers: [:command, :alt]
-        apple.item :show_all, title: 'Show All'
+        apple.item :hide, title: I18n.t("apple:hide"), key: 'h'
+        apple.item :hide_others, title: I18n.t("apple:hide_others"), key: 'h', modifiers: [:command, :alt]
+        apple.item :show_all, title: I18n.t("apple:show_all")
         apple.separator
-        apple.item :quit, title: "Quit #{NSApp.name}", key: 'q'
+        apple.item :quit, title: I18n.t("apple:quit"), key: 'q'
       end
-      main.submenu :file do |file|
-        file.item :new, title: "New", key: 'n', action: 'newDocument:'
-        file.item :open, title: "Open...", key: 'o', action: 'openDocument:'
+      main.submenu :file, title: I18n.t("file") do |file|
+        file.item :new, title: I18n.t("file:new"), key: 'n', action: 'newDocument:'
+        file.item :open, title: I18n.t("file:open"), key: 'o', action: 'openDocument:'
         file.separator
-        file.item :close, title: "Close", key: 'w', action: 'performClose:'
-        file.item :save, title: "Save", key: 's', action: 'saveDocument:'
-        file.item :save_as, title: "Save As...", key: 's', modifiers: [:command, :shift], action: 'saveDocumentAs:'
+        file.item :close, title: I18n.t("file:close"), key: 'w', action: 'performClose:'
+        file.item :save, title: I18n.t("file:save"), key: 's', action: 'saveDocument:'
+        file.item :save_as, title: I18n.t("file:save_as"), key: 's', modifiers: [:command, :shift], action: 'saveDocumentAs:'
         file.separator
-        file.item :print, key: 'p', action: 'printDocument:'
+        file.item :print, title: I18n.t("file:print"), key: 'p', action: 'printDocument:'
       end
     end
   end
