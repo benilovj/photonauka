@@ -6,10 +6,14 @@
 "apple:show_all"    = "Показать все";
 "apple:quit"        = "Завершить Фотонауку";
 
-"file"         = "Файл";
-"file:new"     = "Новый";
-"file:open"    = "Открыть...";
-"file:close"   = "Закрыть";
-"file:save"    = "Сохранить";
-"file:save_as" = "Сохрабить как...";
-"file:print"   = "Напечатать...";
+"file"              = "Файл";
+"file:new"          = "Новый";
+"file:open"         = "Открыть...";
+"file:close"        = "Закрыть";
+"file:save"         = "Сохранить";
+"file:save_as"      = "Сохранить как...";
+"file:print"        = "Напечатать...";
+
+"edit"              = "Правка";
+"edit:undo"         = "Отменить";
+"edit:redo"         = "Повторить";

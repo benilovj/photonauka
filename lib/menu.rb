@@ -30,6 +30,10 @@ module HotCocoa
         file.separator
         file.item :print, title: I18n.t("file:print"), key: 'p', action: 'printDocument:'
       end
+      main.submenu :edit, title: I18n.t("edit") do |file|
+        file.item :undo, title: I18n.t("edit:undo"), key: 'z', action: 'undo:'
+        file.item :redo, title: I18n.t("edit:redo"), key: 'z', modifiers: [:command, :shift], action: 'redo:'
+      end
     end
   end
 end

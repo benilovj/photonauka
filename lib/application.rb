@@ -5,6 +5,8 @@ rescue LoadError
   require 'hotcocoa'
 end
 
+framework 'Cocoa'
+
 require 'lib/core_extensions'
 require 'lib/documents/project'
 

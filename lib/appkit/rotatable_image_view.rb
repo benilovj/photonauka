@@ -70,7 +70,10 @@ class RotatableImageView < NSView
     current_location = event.locationInWindow
     new_origin = NSMakePoint(current_location.x - @initialLocation.x, current_location.y - @initialLocation.y)
     self.setFrameOrigin(new_origin)
-    @delegate.moved_to(new_origin)
+  end
+
+  def mouseUp(event)
+    @delegate.moved_to(self.frame.origin)
   end
   
   def filename=(filename)

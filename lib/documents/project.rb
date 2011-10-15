@@ -7,6 +7,7 @@ class Project < NSDocument
   def init
     super
     @floor_plan = FloorPlan.new
+    @floor_plan.undo_manager = undoManager
     self
   end
   
@@ -16,6 +17,7 @@ class Project < NSDocument
 
   def readFromData(data, ofType:type, error:outError)
     @floor_plan = NSKeyedUnarchiver.unarchiveObjectWithData data
+    @floor_plan.undo_manager = undoManager
     true
   end
   

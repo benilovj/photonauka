@@ -6,10 +6,14 @@
 "apple:show_all"    = "Show All";
 "apple:quit"        = "Quit Photonauka";
 
-"file"         = "File";
-"file:new"     = "New";
-"file:open"    = "Open...";
-"file:close"   = "Close";
-"file:save"    = "Save";
-"file:save_as" = "Save As...";
-"file:print"   = "Print";
+"file"              = "File";
+"file:new"          = "New";
+"file:open"         = "Open...";
+"file:close"        = "Close";
+"file:save"         = "Save";
+"file:save_as"      = "Save As...";
+"file:print"        = "Print";
+
+"edit"              = "Edit";
+"edit:undo"         = "Undo";
+"edit:redo"         = "Redo";
