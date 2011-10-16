@@ -16,7 +16,6 @@ class LightingSetup
   def start
     application do |app|
       app.delegate = self
-      app.should_terminate_after_last_window_closed? { true }
     end
   end  
 end
