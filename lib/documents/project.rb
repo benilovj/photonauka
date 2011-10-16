@@ -5,7 +5,10 @@ class Project < NSDocument
   attr_accessor :floor_plan
   
   def init
-    super
+    # the &nil part is a workaround for the warning:
+    #  unknown: warning: passing a block to an Objective-C method - will be ignored
+    # not sure where the warning comes from
+    super(&nil)
     @floor_plan = FloorPlan.new
     @floor_plan.undo_manager = undoManager
     self

@@ -17,7 +17,7 @@ class ProjectWindowFactory
   end
   
   def make_new_window
-    window(frame: [@window_cascade_point.x, @window_cascade_point.y, 500, 500]) do |win|
+    window(frame: [@window_cascade_point.x, @window_cascade_point.y, 500, 500], view: :nolayout) do |win|
       @window_cascade_point = win.cascadeTopLeftFromPoint(@window_cascade_point)
       win.view = floor_plan_view(auto_resize: [:width, :height]) do |view|
         view.setWantsLayer(true)
