@@ -1,5 +1,5 @@
 Application::Specification.new do |s|
-  s.name       = 'LightingSetup'
+  s.name       = 'Photonauka'
   s.identifier = 'com.photonauka.LightingSetup'
   s.version    = '0.1'
   s.icon       = 'resources/MainIcon.icns'
