@@ -42,7 +42,7 @@ class RotatableImageView < NSView
   GRIP_RADIUS = 3
   BORDER_INSET = IMAGE_INSET
   
-  attr_writer :delegate
+  attr_accessor :delegate
   
   def initWithFrame(frame)
     super

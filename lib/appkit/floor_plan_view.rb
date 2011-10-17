@@ -29,20 +29,23 @@ class FloorPlanView < NSView
   end
   
   def refresh
-    remove_subviews
-    image_view = HotCocoa.rotatable_image_view(frame: [0,0,100,100],
-                                      image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
-      controller = RotatableImageController.new
-      controller.floor_plan = @floor_plan
-      image_view.delegate = controller
-      image_view.setFrameCenterRotation(image_view.frameCenterRotation + 45)
-      image_view.setFrameOrigin(@floor_plan.position)
-    end
-    addSubview image_view
+    initial_refresh if subviews.empty?
+    @image_view.delegate.floor_plan = @floor_plan
+    @image_view.setFrameCenterRotation(45)
+    @image_view.setFrameOrigin(@floor_plan.position)
     setNeedsDisplay true
   end
   
   protected
+  def initial_refresh
+    @image_view = HotCocoa.rotatable_image_view(frame: [0,0,100,100],
+                                      image_filename: png_filename('zoom_2x2_128_031')) do |image_view|
+      controller = RotatableImageController.new
+      image_view.delegate = controller
+    end
+    addSubview @image_view
+  end
+  
   def deselect_rotatable_images
     subviews.select {|view| view.is_a?(RotatableImageView)}.map(&:deselect)
   end
