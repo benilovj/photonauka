@@ -1,6 +1,8 @@
 framework 'Cocoa'
 require 'hotcocoa'
 
+require 'lib/core_extensions/cgrect'
+
 class RotationEventResponder
   attr_writer :delegate
   
