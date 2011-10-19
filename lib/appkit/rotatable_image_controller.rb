@@ -1,3 +1,5 @@
+require 'lib/core_extensions/nspoint'
+
 class RotatableImageController
   attr_writer :floor_plan
   
@@ -13,8 +15,8 @@ class RotatableImageController
     NSCursor.openHandCursor.set
   end
   
-  def moved_to(new_location)
-    @floor_plan.position = new_location
+  def shift_by(delta)
+    @floor_plan.position += delta
   end
   
   protected

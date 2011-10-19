@@ -2,6 +2,7 @@ framework 'Cocoa'
 require 'hotcocoa'
 
 require 'lib/core_extensions/cgrect'
+require 'lib/core_extensions/nspoint'
 
 class RotationEventResponder
   attr_writer :delegate
@@ -61,21 +62,20 @@ class RotatableImageView < NSView
   end
   
   def mouseDown(event)
-    @initialLocation = event.locationInWindow
-    @initialLocation.x -= frame.origin.x
-    @initialLocation.y -= frame.origin.y
+    @initial_location = self.convertPoint(event.locationInWindow, fromView: self)
+    @initial_origin = frame.origin
     
     self.selected = true
   end
   
   def mouseDragged(event)
-    current_location = event.locationInWindow
-    new_origin = NSMakePoint(current_location.x - @initialLocation.x, current_location.y - @initialLocation.y)
-    self.setFrameOrigin(new_origin)
+    delta = self.convertPoint(event.locationInWindow, fromView: self) - @initial_location
+    self.setFrameOrigin @initial_origin + delta
   end
 
   def mouseUp(event)
-    @delegate.moved_to(self.frame.origin)
+    delta = self.convertPoint(event.locationInWindow, fromView: self) - @initial_location
+    @delegate.shift_by(delta)
   end
   
   def filename=(filename)
