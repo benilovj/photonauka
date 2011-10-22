@@ -2,6 +2,7 @@ require 'lib/core_extensions/nspoint'
 
 class RotatableImageController
   attr_writer :floor_plan
+  attr_reader :view
   
   def rotation_started
     rotate_cursor.set
@@ -17,6 +18,17 @@ class RotatableImageController
   
   def shift_by(delta)
     @floor_plan.position += delta
+  end
+  
+  def view=(view)
+    @view = view
+    @view.delegate = self
+  end
+  
+  def floor_plan=(new_floor_plan)
+    @floor_plan = new_floor_plan
+    @view.setFrameCenterRotation(45)
+    @view.center = @floor_plan.position
   end
   
   protected
