@@ -20,6 +20,10 @@ class RotatableImageController
     @floor_plan.position += delta
   end
   
+  def rotation=(rotation)
+    @floor_plan.rotation = rotation
+  end
+  
   def view=(view)
     @view = view
     @view.delegate = self
@@ -27,7 +31,7 @@ class RotatableImageController
   
   def floor_plan=(new_floor_plan)
     @floor_plan = new_floor_plan
-    @view.setFrameCenterRotation(45)
+    @view.setFrameCenterRotation(@floor_plan.rotation)
     @view.center = @floor_plan.position
   end
   

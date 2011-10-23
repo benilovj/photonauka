@@ -22,6 +22,14 @@ class ProjectWindowFactory
       win.view = floor_plan_view(auto_resize: [:width, :height]) do |view|
         view.setWantsLayer(true)
       end
+      win.view << slider(:min => 0, :max => 360, :tic_marks => 25) do |s|
+        s.frameSize = [320, 30]
+        s.setAllowsTickMarkValuesOnly(true)
+        s.on_action do |s|
+          win.view.rotation = s.to_i
+          win.view.needsDisplay = true
+        end
+      end
     end
   end
 end

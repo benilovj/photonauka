@@ -16,6 +16,10 @@ class FloorPlanView < NSView
     NSRectFill(bounds)
   end
   
+  def rotation=(rotation)
+    rotatable_images.first.rotation = rotation
+  end
+  
   def floor_plan=(floor_plan)
     if @floor_plan != floor_plan
       nc = NSNotificationCenter.defaultCenter
@@ -29,7 +33,7 @@ class FloorPlanView < NSView
   end
   
   def refresh
-    initial_refresh if subviews.empty?
+    initial_refresh if rotatable_images.empty?
     @device_controller.floor_plan = @floor_plan
     setNeedsDisplay true
   end
@@ -43,6 +47,10 @@ class FloorPlanView < NSView
   end
   
   def deselect_rotatable_images
-    subviews.select {|view| view.is_a?(RotatableImageView)}.map(&:deselect)
+    rotatable_images.map(&:deselect)
+  end
+  
+  def rotatable_images
+    subviews.select {|view| view.is_a?(RotatableImageView)}
   end
 end

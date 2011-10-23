@@ -88,6 +88,11 @@ class RotatableImageView < NSView
     draw_rotation_grips if @selected
   end
   
+  def rotation=(rotation)
+    setFrameCenterRotation(rotation)
+    @delegate.rotation = rotation
+  end
+  
   def selected=(should_be_selected)
     if @selected and not should_be_selected
       self.trackingAreas.each {|area| removeTrackingArea(area)}
