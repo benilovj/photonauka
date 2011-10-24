@@ -13,6 +13,8 @@ describe NSView do
       view
     end
     
+    specify { subject.center.should be_near_point(5, 10) }
+    
     it "should move the frame origin when the center is moved" do
       subject.center = NSPoint.new(0,0)
       subject.frame.origin.should be_near_point(-5, -10)
@@ -26,6 +28,8 @@ describe NSView do
       view.setFrameCenterRotation(45)
       view
     end
+    
+    specify { subject.center.should be_near_point(5, 10) }
     
     it "should move the frame origin when the center is moved" do
       subject.center = NSPoint.new(0,0)
