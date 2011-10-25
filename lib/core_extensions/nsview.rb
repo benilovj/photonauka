@@ -1,3 +1,5 @@
+framework 'AppKit'
+
 require 'lib/core_extensions/nspoint'
 
 class NSView

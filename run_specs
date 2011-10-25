@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+macruby -S rspec spec/**/*_spec.rb
