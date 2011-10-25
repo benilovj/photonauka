@@ -37,7 +37,7 @@ class RotatableImageView < NSView
 
     if @rotation_occuring
       @initial_rotation = frameCenterRotation
-      @initial_angle = degrees_given(self.convertPoint(event.locationInWindow, fromView: self) - self.center)
+      @initial_angle = (self.convertPoint(event.locationInWindow, fromView: self) - self.center).to_radial.degrees
     else
       @initial_location = self.convertPoint(event.locationInWindow, fromView: self)
       @initial_origin = frame.origin
@@ -49,7 +49,7 @@ class RotatableImageView < NSView
   def mouseDragged(event)
     if @rotation_occuring
       delta = self.convertPoint(event.locationInWindow, fromView: self) - self.center
-      setFrameCenterRotation(@initial_rotation + degrees_given(delta) - @initial_angle)
+      setFrameCenterRotation(@initial_rotation + delta.to_radial.degrees - @initial_angle)
     else
       delta = self.convertPoint(event.locationInWindow, fromView: self) - @initial_location
       self.setFrameOrigin @initial_origin + delta
@@ -62,7 +62,7 @@ class RotatableImageView < NSView
     
     if @rotation_occuring
       delta = self.convertPoint(event.locationInWindow, fromView: self) - self.center
-      @delegate.rotation = @initial_rotation + degrees_given(delta) - @initial_angle
+      @delegate.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
     else
       delta = self.convertPoint(event.locationInWindow, fromView: self) - @initial_location
       @delegate.shift_by(delta)
@@ -89,7 +89,7 @@ class RotatableImageView < NSView
     if @selected and not should_be_selected
       self.trackingAreas.each {|area| removeTrackingArea(area)}
     elsif not @selected and should_be_selected
-      define_tracking_areas(@rotation_handler)
+      define_tracking_areas
     end
     @selected = should_be_selected
     setNeedsDisplay(true)
@@ -100,11 +100,7 @@ class RotatableImageView < NSView
   end
   
   protected
-  def degrees_given(delta)
-    (Math.atan2(delta.y.to_f, delta.x.to_f) * 180) / Math::PI
-  end
-  
-  def define_tracking_areas(rotation_handler)
+  def define_tracking_areas
     squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 2*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
