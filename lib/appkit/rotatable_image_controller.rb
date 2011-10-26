@@ -35,7 +35,67 @@ class RotatableImageController
     @view.center = @floor_plan.position
   end
   
+  def mouseEntered(event)
+    @cursor_over_grip = true
+    fire_events_if_needed
+  end
+
+  def mouseExited(event)
+    @cursor_over_grip = false
+    fire_events_if_needed
+  end
+  
+  def mouseDown(event)
+    @mouse_pressed = true
+    fire_events_if_needed
+
+    @rotation_occuring = @cursor_over_grip
+
+    if @rotation_occuring
+      @initial_rotation = view.frameCenterRotation
+      @initial_angle = (view.relative_location_of(event) - view.center).to_radial.degrees
+    else
+      @initial_location = view.relative_location_of(event)
+      @initial_origin = view.frame.origin
+    end
+    
+    view.select
+  end
+  
+  def mouseDragged(event)
+    if @rotation_occuring
+      delta = view.relative_location_of(event) - view.center
+      view.setFrameCenterRotation(@initial_rotation + delta.to_radial.degrees - @initial_angle)
+    else
+      delta = view.relative_location_of(event) - @initial_location
+      view.setFrameOrigin @initial_origin + delta
+    end
+  end
+
+  def mouseUp(event)
+    @mouse_pressed = false
+    fire_events_if_needed
+    
+    if @rotation_occuring
+      delta = view.relative_location_of(event) - view.center
+      view.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
+    else
+      delta = view.relative_location_of(event) - @initial_location
+      shift_by(delta)
+    end
+
+    @rotation_occuring = false
+  end
+  
   protected
+  def fire_events_if_needed
+    case
+    when (@cursor_over_grip and @mouse_pressed) then rotation_started
+    when (@cursor_over_grip and not @mouse_pressed) then mouse_over_grip
+    else rotation_finished
+    end
+  end
+  
   def rotate_cursor
     @rotate_cursor ||= load_rotate_cursor
   end
