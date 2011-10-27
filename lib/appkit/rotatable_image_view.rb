@@ -15,12 +15,20 @@ class RotatableImageView < NSView
   
   def initWithFrame(frame)
     super
-    deselect unless self.nil?
+    unless self.nil?
+      deselect
+      self.delegate = RotatableImageController.new
+    end
     self
   end
   
   def filename=(filename)
     @image = NSImage.alloc.initWithContentsOfFile filename
+  end
+  
+  def delegate=(new_delegate)
+    @delegate = new_delegate
+    @delegate.view = self
   end
   
   def drawRect(rect)

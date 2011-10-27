@@ -40,10 +40,9 @@ class FloorPlanView < NSView
   
   protected
   def initial_refresh
-    @device_controller = RotatableImageController.new
-    @device_controller.view = HotCocoa.rotatable_image_view(frame: [0,0,100,100],
-                                                   image_filename: png_filename('zoom_2x2_128_031'))
-    addSubview @device_controller.view
+    view = HotCocoa.rotatable_image_view(frame: [0,0,100,100], image_filename: png_filename('zoom_2x2_128_031'))
+    addSubview view
+    @device_controller = view.delegate
   end
   
   def deselect_rotatable_images

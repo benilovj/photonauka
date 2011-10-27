@@ -2,19 +2,7 @@ require 'lib/core_extensions/nspoint'
 
 class RotatableImageController
   attr_writer :floor_plan
-  attr_reader :view
-  
-  def rotation_started
-    rotate_cursor.set
-  end
-  
-  def rotation_finished
-    NSCursor.arrowCursor.set
-  end
-  
-  def mouse_over_grip
-    NSCursor.openHandCursor.set
-  end
+  attr_accessor :view
   
   def shift_by(delta)
     @floor_plan.position += delta
@@ -22,11 +10,6 @@ class RotatableImageController
   
   def rotation=(rotation)
     @floor_plan.rotation = rotation
-  end
-  
-  def view=(view)
-    @view = view
-    @view.delegate = self
   end
   
   def floor_plan=(new_floor_plan)
@@ -37,17 +20,18 @@ class RotatableImageController
   
   def mouseEntered(event)
     @cursor_over_grip = true
-    fire_events_if_needed
+    update_cursor
   end
 
   def mouseExited(event)
     @cursor_over_grip = false
-    fire_events_if_needed
+    update_cursor
   end
   
   def mouseDown(event)
     @mouse_pressed = true
-    fire_events_if_needed
+    update_cursor
+    view.select
 
     @rotation_occuring = @cursor_over_grip
 
@@ -58,8 +42,6 @@ class RotatableImageController
       @initial_location = view.relative_location_of(event)
       @initial_origin = view.frame.origin
     end
-    
-    view.select
   end
   
   def mouseDragged(event)
@@ -74,8 +56,8 @@ class RotatableImageController
 
   def mouseUp(event)
     @mouse_pressed = false
-    fire_events_if_needed
-    
+    update_cursor
+
     if @rotation_occuring
       delta = view.relative_location_of(event) - view.center
       view.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
@@ -86,13 +68,13 @@ class RotatableImageController
 
     @rotation_occuring = false
   end
-  
+
   protected
-  def fire_events_if_needed
+  def update_cursor
     case
-    when (@cursor_over_grip and @mouse_pressed) then rotation_started
-    when (@cursor_over_grip and not @mouse_pressed) then mouse_over_grip
-    else rotation_finished
+    when (@cursor_over_grip and @mouse_pressed) then rotate_cursor.set
+    when (@cursor_over_grip and not @mouse_pressed) then NSCursor.openHandCursor.set
+    else NSCursor.arrowCursor.set
     end
   end
   
