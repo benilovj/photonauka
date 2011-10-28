@@ -1,7 +1,6 @@
 require 'lib/core_extensions/nspoint'
 
 class RotatableImageController
-  attr_writer :floor_plan
   attr_accessor :view
   
   def shift_by(delta)
@@ -60,7 +59,7 @@ class RotatableImageController
 
     if @rotation_occuring
       delta = view.relative_location_of(event) - view.center
-      view.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
+      self.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
     else
       delta = view.relative_location_of(event) - @initial_location
       shift_by(delta)
@@ -71,6 +70,7 @@ class RotatableImageController
 
   protected
   def update_cursor
+    return if NSCursor.currentCursor.nil?
     case
     when (@cursor_over_grip and @mouse_pressed) then rotate_cursor.set
     when (@cursor_over_grip and not @mouse_pressed) then NSCursor.openHandCursor.set
