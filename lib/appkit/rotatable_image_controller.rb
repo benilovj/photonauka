@@ -7,18 +7,20 @@ class RotationResponder
   end
 
   def mouseDown(relative_location)
-    @initial_rotation = @view.frameCenterRotation
-    @initial_angle = (relative_location - @view.center).to_radial.degrees
+    @degrees_between_frame_rotation_and_grip_vector = @view.frameCenterRotation - grip_vector_degrees_given(relative_location)
   end
 
   def mouseDragged(relative_location)
-    delta = relative_location - @view.center
-    @view.setFrameCenterRotation(@initial_rotation + delta.to_radial.degrees - @initial_angle)
+    @view.setFrameCenterRotation(grip_vector_degrees_given(relative_location) + @degrees_between_frame_rotation_and_grip_vector)
   end
 
   def mouseUp(relative_location)
-    delta = relative_location - @view.center
-    @controller.rotation = @initial_rotation + delta.to_radial.degrees - @initial_angle
+    @controller.rotation = grip_vector_degrees_given(relative_location) + @degrees_between_frame_rotation_and_grip_vector
+  end
+
+  protected
+  def grip_vector_degrees_given(relative_location)
+    (relative_location - @view.center).to_radial.degrees
   end
 end
 
