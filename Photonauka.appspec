@@ -1,7 +1,9 @@
+require File.join(File.dirname(__FILE__), 'lib', 'version')
+
 Application::Specification.new do |s|
   s.name       = 'Photonauka'
   s.identifier = 'com.photonauka.LightingSetup'
-  s.version    = '0.1'
+  s.version    = Version::STRING
   s.icon       = 'resources/MainIcon.icns'
   s.resources  = Dir.glob('resources/**/*.*')
   s.sources    = Dir.glob('lib/**/*.rb')
@@ -16,4 +18,8 @@ Application::Specification.new do |s|
     doc_type.role       = :editor
     doc_type.class      = "Project"
   end
+  
+  s.plist[:SUFeedURL] = "http://dl.dropbox.com/u/10302128/feed.xml"
+  s.plist[:SUPublicDSAKeyFile] = "dsa_pub.pem"
+  s.plist[:SUEnableAutomaticChecks] = true
 end

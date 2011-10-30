@@ -6,6 +6,7 @@ rescue LoadError
 end
 
 framework 'Cocoa'
+framework 'Sparkle'
 
 require 'lib/core_extensions'
 require 'lib/documents/project'
@@ -16,8 +17,9 @@ class LightingSetup
   def start
     application do |app|
       app.delegate = self
+      app.did_finish_launching { SUUpdater.sharedUpdater.checkForUpdates(app) }
     end
-  end  
+  end
 end
 
 LightingSetup.new.start
