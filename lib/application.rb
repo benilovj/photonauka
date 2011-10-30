@@ -17,7 +17,7 @@ class LightingSetup
   def start
     application do |app|
       app.delegate = self
-      app.did_finish_launching { SUUpdater.sharedUpdater.checkForUpdates(app) }
+      app.did_finish_launching { SUUpdater.sharedUpdater.checkForUpdatesInBackground }
     end
   end
 end
