@@ -5,13 +5,13 @@
     %link http://dl.dropbox.com/u/10302128/feed.xml
     %language en
     %item
-      %title Release 2011-10-15
+      %title Release #{release_name}
       %description
         :cdata
-          <h2>New Features</h2>
+          #{release_notes}
       %pubDate= Time.now
-      %enclosure{:url => "http://dl.dropbox.com/u/10302128/LightingSetup-2011-10-15.dmg",
-                 "sparkle:version" => "20111015",
-                 "sparkle:dsaSignature" => "MCwCFFsLUHc+efQVJvq6R0DFaMK0G+RQAhQg8/0/nBaUEqW59oCw8uYAG2iaeA==",
+      %enclosure{:url => "http://dl.dropbox.com/u/10302128/#{release_dmg}",
+                 "sparkle:version" => version,
+                 "sparkle:dsaSignature" => dmg_signature,
                  :length => "39039802",
                  :type => "application/octet-stream"}
