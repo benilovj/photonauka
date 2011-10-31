@@ -1,20 +1,23 @@
 require File.join(File.dirname(__FILE__), 'lib', 'photonauka', 'version')
+require 'date'
 
 Application::Specification.new do |s|
-  s.name       = 'Photonauka'
-  s.identifier = 'com.photonauka.LightingSetup'
-  s.version    = Photonauka::VERSION
-  s.icon       = 'resources/MainIcon.icns'
-  s.resources  = Dir.glob('resources/**/*.*')
-  s.sources    = Dir.glob('lib/**/*.rb')
-  s.embed_bs   = true
-  s.overwrite  = true
-  s.stdlib     = false
+  s.name          = 'Photonauka'
+  s.identifier    = 'com.photonauka.LightingSetup'
+  s.version       = `git rev-parse --short HEAD`.strip
+  s.copyright     = "© #{Date.today.year == 2011 ? "2011" : "2011 - #{Date.today.year}"}, Photonauka Ltd"
+  s.short_version = Photonauka::VERSION
+  s.icon          = 'resources/MainIcon.icns'
+  s.resources     = Dir.glob('resources/**/*.*')
+  s.sources       = Dir.glob('lib/**/*.rb')
+  s.embed_bs      = true
+  s.overwrite     = true
+  s.stdlib        = false
   
   s.declare_doc_type do |doc_type|
     doc_type.extensions = ["light"]
     doc_type.icon       = "MainIcon.icns"
-    doc_type.name       = "LightingSetupProject"
+    doc_type.name       = "Lighting Setup Project"
     doc_type.role       = :editor
     doc_type.class      = "Project"
   end
