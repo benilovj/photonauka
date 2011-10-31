@@ -1,0 +1,10 @@
+!!!
+%html
+  %head
+    %title Release notes
+    %meta{:content => "text/html;charset=UTF-8", "http-equiv" => "Content-Type"}
+  %body
+    %h2 Changes:
+    %ul
+      - for issue in issues
+        %li [<a href='#{issue["html_url"]}'>##{issue["number"]}</a>] - #{issue["title"]}

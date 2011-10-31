@@ -46,10 +46,11 @@ task :sign => :dmg do
   puts "DSA signature for #{path_to_source_dmg}: #{@signature}"
 end
 
-task :relnotes do
+task :release_notes do
   require 'rest-client'
   require 'json'
   require 'stringio'
+  require 'haml'
 
   milestones = get('/repos/benilovj/photonauka/milestones?state=closed')
   expected_milestone_name = "#{Date.today.year}-#{Date.today.month}-#{Date.today.day}"
@@ -57,27 +58,9 @@ task :relnotes do
   raise "Did not find milestone #{expected_milestone_name}!" if milestone.nil?
 
   issues = get("/repos/benilovj/photonauka/issues?milestone=#{milestone["number"]}&state=closed&sort=created&direction=desc")
-  release_notes = StringIO.new
-  release_notes.puts '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"'
-  release_notes.puts '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
-  release_notes.puts '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">'
-  release_notes.puts '<head>'
-  release_notes.puts '<title>Release notes</title>'
-  release_notes.puts '<meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />'
-  release_notes.puts '</head>'
-  release_notes.puts '<body>'
+  template = File.read('sparkle_feed/release_notes.haml')
 
-  release_notes.puts "<h2>Changes:</h2>"
-  release_notes.puts "<ul>"
-  issues.each do |issue|
-    release_notes.puts "<li>[<a href='#{issue["html_url"]}'>##{issue["number"]}</a>] - #{issue["title"]}</li>"
-  end
-  release_notes.puts "</ul>"
-  release_notes.puts '</body>'
-  release_notes.puts '</html>'
-
-  release_notes.rewind
-  @release_notes = release_notes.read
+  @release_notes = Haml::Engine.new(template).render(Object.new, :issues => issues)
   puts "Release notes: \n" + @release_notes
 end
 
@@ -95,7 +78,7 @@ task :upload_dmg => :dmg do
   cp path_to_source_dmg, File.join(dropbox_public_path, target_dmg_name)
 end
 
-task :generate_sparkle_feed => [:sign, :relnotes] do
+task :generate_sparkle_feed => [:sign, :release_notes] do
   require 'haml'
   
   template = File.read('sparkle_feed/feed.haml')
