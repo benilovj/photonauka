@@ -1,9 +1,9 @@
-require File.join(File.dirname(__FILE__), 'lib', 'version')
+require File.join(File.dirname(__FILE__), 'lib', 'photonauka', 'version')
 
 Application::Specification.new do |s|
   s.name       = 'Photonauka'
   s.identifier = 'com.photonauka.LightingSetup'
-  s.version    = Version::STRING
+  s.version    = Photonauka::VERSION
   s.icon       = 'resources/MainIcon.icns'
   s.resources  = Dir.glob('resources/**/*.*')
   s.sources    = Dir.glob('lib/**/*.rb')
