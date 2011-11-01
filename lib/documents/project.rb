@@ -25,6 +25,7 @@ class Project < NSDocument
   end
   
   def printOperationWithSettings(printSettings, error:outError)
+    @view.prepare_for_printing
     NSPrintOperation.printOperationWithView @view, printInfo:printInfo
   end
   

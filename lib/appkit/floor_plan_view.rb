@@ -38,6 +38,10 @@ class FloorPlanView < NSView
     setNeedsDisplay true
   end
   
+  def prepare_for_printing
+    deselect_rotatable_images
+  end
+
   protected
   def initial_refresh
     view = HotCocoa.rotatable_image_view(frame: [0,0,100,100], image_filename: png_filename('zoom_2x2_128_031'))
