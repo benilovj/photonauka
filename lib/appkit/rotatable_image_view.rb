@@ -6,7 +6,7 @@ require 'lib/core_extensions/nspoint'
 require 'lib/core_extensions/nsview'
 
 class RotatableImageView < NSView
-  IMAGE_INSET = 7
+  IMAGE_INSET = 15
   
   GRIP_RADIUS = 3
   BORDER_INSET = IMAGE_INSET
@@ -79,7 +79,7 @@ class RotatableImageView < NSView
   
   protected
   def define_tracking_areas
-    squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 3*GRIP_RADIUS)}
+    squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 8*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
                                                options: [:mouse_entered_and_exited, :active_in_key_window],
