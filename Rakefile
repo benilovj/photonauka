@@ -32,12 +32,10 @@ def github_credentials
   @credentials ||= File.read(File.join(ENV['HOME'], ".github")).strip
 end
 
-def secured(url)
-  "https://#{github_credentials}@api.github.com" + url
-end
-
-def get(url)
-  JSON.parse(RestClient.get(secured(url)))
+def get(url, options = {})
+  require 'rest-client'
+  require 'json'
+  JSON.parse(RestClient.get("https://#{github_credentials}@api.github.com" + url, options))
 end
 
 desc "Get signature for app"
@@ -47,9 +45,6 @@ task :sign => :dmg do
 end
 
 task :release_notes do
-  require 'rest-client'
-  require 'json'
-  require 'stringio'
   require 'haml'
 
   milestones = get('/repos/benilovj/photonauka/milestones?state=closed')
@@ -57,7 +52,8 @@ task :release_notes do
   milestone = milestones.detect {|m| m["title"] == expected_milestone_name}
   raise "Did not find milestone #{expected_milestone_name}!" if milestone.nil?
 
-  issues = get("/repos/benilovj/photonauka/issues?milestone=#{milestone["number"]}&state=closed&sort=created&direction=desc")
+  issues = get("/repos/benilovj/photonauka/issues",
+               {:params => {:milestone => milestone["number"], :state => "closed", :sort => "created", :direction => "desc"}})
   template = File.read('sparkle_feed/release_notes.haml')
 
   @release_notes = Haml::Engine.new(template).render(Object.new, :issues => issues)
