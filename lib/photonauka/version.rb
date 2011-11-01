@@ -1,3 +1,3 @@
 module Photonauka
-  VERSION = '0.2.20111031'
+  VERSION = '0.2.20111101'
 end

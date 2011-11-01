@@ -17,7 +17,7 @@ def target_dmg_name
 end
 
 def version_string
-  "#{Date.today.year}#{Date.today.month}#{Date.today.day}"
+  Date.today.strftime("%Y%m%d")
 end
 
 def dropbox_public_path
@@ -53,7 +53,7 @@ task :release_notes do
   require 'haml'
 
   milestones = get('/repos/benilovj/photonauka/milestones?state=closed')
-  expected_milestone_name = "#{Date.today.year}-#{Date.today.month}-#{Date.today.day}"
+  expected_milestone_name = Date.today.strftime("%Y-%m-%d")
   milestone = milestones.detect {|m| m["title"] == expected_milestone_name}
   raise "Did not find milestone #{expected_milestone_name}!" if milestone.nil?
 
@@ -90,7 +90,7 @@ task :generate_sparkle_feed => [:sign, :release_notes] do
       :release_dmg   => target_dmg_name,
       :dmg_signature => @signature,
       :version       => Photonauka::VERSION,
-      :release_name  => "#{Date.today.year}-#{Date.today.month}-#{Date.today.day}"
+      :release_name  => Date.today.strftime("%Y-%m-%d")
     )
   end
 end
