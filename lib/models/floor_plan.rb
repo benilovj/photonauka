@@ -6,9 +6,9 @@ class Device
   attr_reader :rotation
   attr_writer :undo_manager
 
-  def initialize
-    @position = NSPoint.new(100,100)
-    @rotation = 45
+  def initialize(position, rotation)
+    @position = position
+    @rotation = rotation
   end
 
   def encodeWithCoder(c)
@@ -58,7 +58,7 @@ class FloorPlan
   end
 
   def initialize
-    @devices = [Device.new]
+    @devices = [Device.new(NSPoint.new(100,100), 45)]
     @devices.each do |device|
       NSNotificationCenter.defaultCenter.addObserver self, selector:'refresh', name:DEVICE_CHANGE_NOTIFICATION, object:device
     end

@@ -48,27 +48,30 @@ end
 
 class RotatableImageController
   attr_accessor :view
-  
+
   def view=(new_view)
     @view = new_view
     @rotation_responder = RotationResponder.new(self, new_view)
     @dragging_responder = DraggingResponder.new(self, new_view)
   end
-  
+
   def shift_by(delta)
     @device.position += delta
   end
-  
+
   def rotation=(rotation)
     @device.rotation = rotation
   end
-  
+
   def device=(new_device)
     @device = new_device
+  end
+
+  def refresh
     @view.setFrameCenterRotation(@device.rotation)
     @view.center = @device.position
   end
-  
+
   def mouseEntered(event)
     @cursor_over_grip = true
     update_cursor
@@ -78,7 +81,7 @@ class RotatableImageController
     @cursor_over_grip = false
     update_cursor
   end
-  
+
   def mouseDown(event)
     @rotation_occuring = @cursor_over_grip
     @mouse_pressed = true

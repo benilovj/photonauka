@@ -34,7 +34,7 @@ class FloorPlanView < NSView
   
   def refresh
     initial_refresh if rotatable_images.empty?
-    @device_controller.device = @floor_plan.devices.first
+    @device_controllers.values.map(&:refresh)
     setNeedsDisplay true
   end
   
@@ -44,9 +44,13 @@ class FloorPlanView < NSView
 
   protected
   def initial_refresh
-    view = HotCocoa.rotatable_image_view(frame: [0,0,100,100], image_filename: png_filename('zoom_2x2_128_031'))
-    addSubview view
-    @device_controller = view.delegate
+    @device_controllers = {}
+    @floor_plan.devices.each do |device|
+      view = HotCocoa.rotatable_image_view(frame: [0,0,100,100], image_filename: png_filename('zoom_2x2_128_031'))
+      addSubview view
+      @device_controllers[device] = view.delegate
+      view.delegate.device = device
+    end
   end
   
   def deselect_rotatable_images
