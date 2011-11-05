@@ -1,4 +1,4 @@
-require 'lib/models/device'
+require 'models/device'
 
 FLOOR_PLAN_CHANGE_NOTIFICATION = 'FLOOR_PLAN_CHANGE_NOTIFICATION'
 

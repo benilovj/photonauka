@@ -1,4 +1,4 @@
-require 'lib/core_extensions/nspoint'
+require 'core_extensions/nspoint'
 
 class RotationResponder
   def initialize(controller, view)

@@ -8,8 +8,11 @@ end
 framework 'Cocoa'
 framework 'Sparkle'
 
-require 'lib/core_extensions'
-require 'lib/documents/project'
+# adding the lib/ folder to the load path
+$: << File.dirname(__FILE__)
+
+require 'core_extensions'
+require 'documents/project'
 
 class LightingSetup
   include HotCocoa

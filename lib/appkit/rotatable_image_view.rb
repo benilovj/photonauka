@@ -1,9 +1,9 @@
 framework 'Cocoa'
 require 'hotcocoa'
 
-require 'lib/core_extensions/cgrect'
-require 'lib/core_extensions/nspoint'
-require 'lib/core_extensions/nsview'
+require 'core_extensions/cgrect'
+require 'core_extensions/nspoint'
+require 'core_extensions/nsview'
 
 class RotatableImageView < NSView
   IMAGE_INSET = 15
