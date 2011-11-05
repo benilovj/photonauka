@@ -5,6 +5,8 @@ require 'core_extensions/cgrect'
 require 'core_extensions/nspoint'
 require 'core_extensions/nsview'
 
+ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION = 'ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION'
+
 class RotatableImageView < NSView
   IMAGE_INSET = 15
   
@@ -44,6 +46,8 @@ class RotatableImageView < NSView
   def select
     define_tracking_areas unless @selected
     @selected = true
+    NSNotificationCenter.defaultCenter.postNotificationName ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION,
+      object:self, userInfo:nil
     setNeedsDisplay(true)
   end
   
