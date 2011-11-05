@@ -82,7 +82,7 @@ class RotatableImageView < NSView
     squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 8*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
-                                               options: [:mouse_entered_and_exited, :active_in_key_window],
+                                               options: [:mouse_entered_and_exited, :active_in_key_window, :enabled_during_drag],
                                                  owner: @delegate ))
     end
   end
