@@ -9,12 +9,12 @@ ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION = 'ROTATABLE_IMAGE_VIEW_SELECTION_NO
 
 class RotatableImageView < NSView
   IMAGE_INSET = 15
-  
+
   GRIP_RADIUS = 3
   BORDER_INSET = IMAGE_INSET
-  
+
   attr_accessor :delegate
-  
+
   def initWithFrame(frame)
     super
     unless self.nil?
@@ -23,26 +23,34 @@ class RotatableImageView < NSView
     end
     self
   end
-  
+
   def filename=(filename)
     @image = NSImage.alloc.initWithContentsOfFile filename
   end
-  
+
   def delegate=(new_delegate)
     @delegate = new_delegate
     @delegate.view = self
   end
-  
+
   def drawRect(rect)
     draw_image
     draw_rotation_grips if @selected
   end
-  
+
+  def rotation
+    frameCenterRotation
+  end
+
   def rotation=(rotation)
     setFrameCenterRotation(rotation)
     @delegate.rotation = rotation
   end
-  
+
+  def selected?
+    @selected
+  end
+
   def select
     define_tracking_areas unless @selected
     @selected = true
@@ -50,7 +58,7 @@ class RotatableImageView < NSView
       object:self, userInfo:nil
     setNeedsDisplay(true)
   end
-  
+
   def deselect
     self.trackingAreas.each {|area| removeTrackingArea(area)} if @selected
     @selected = false

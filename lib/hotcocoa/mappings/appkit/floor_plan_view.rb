@@ -5,5 +5,7 @@ HotCocoa::Mappings.map floor_plan_view: FloorPlanView do
 
   def init_with_options view, options
     view.initWithFrame options.delete :frame
+    view.setAcceptsTouchEvents(true)
+    view
   end
 end

@@ -5,12 +5,14 @@ require 'appkit/rotatable_image_controller'
 require 'appkit/png_images'
 
 class FloorPlanView < NSView
+  TRACKPAD_ROTATION_SENSITIVITY = 3
+
   include PngImages
-  
+
   def mouseDown(event)
     deselect_rotatable_images
   end
-  
+
   def drawRect(rect)
     NSColor.colorWithPatternImage(png_file('grid')).setFill
     NSRectFill(bounds)
@@ -18,6 +20,10 @@ class FloorPlanView < NSView
 
   def rotation=(rotation)
     rotatable_images.first.rotation = rotation
+  end
+
+  def rotateWithEvent(event)
+    selected_image.rotation += TRACKPAD_ROTATION_SENSITIVITY * event.rotation
   end
 
   def floor_plan=(floor_plan)
@@ -56,6 +62,10 @@ class FloorPlanView < NSView
 
   def deselect_rotatable_images
     rotatable_images.map(&:deselect)
+  end
+
+  def selected_image
+    rotatable_images.detect(&:selected?)
   end
 
   def deselect_all_but_selected(notification)
