@@ -34,7 +34,7 @@ class FloorPlanView < NSView
   
   def refresh
     initial_refresh if rotatable_images.empty?
-    @device_controller.floor_plan = @floor_plan
+    @device_controller.device = @floor_plan.devices.first
     setNeedsDisplay true
   end
   

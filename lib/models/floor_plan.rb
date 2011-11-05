@@ -51,42 +51,26 @@ class Device
 end
 
 class FloorPlan
+  attr_reader :devices
+  
   def undo_manager=(new_undo_manager)
-    @device.undo_manager = new_undo_manager
+    @devices.first.undo_manager = new_undo_manager
   end
 
   def initialize
-    @device = Device.new
-    NSNotificationCenter.defaultCenter.addObserver self, selector:'refresh', name:DEVICE_CHANGE_NOTIFICATION, object:@device
-  end
-
-  def devices
-    [@device]
+    @devices = [Device.new]
+    @devices.each do |device|
+      NSNotificationCenter.defaultCenter.addObserver self, selector:'refresh', name:DEVICE_CHANGE_NOTIFICATION, object:device
+    end
   end
 
   def encodeWithCoder(c)
-    c.encodeObject @device, forKey:'device'
+    c.encodeObject @devices, forKey:'devices'
   end
 
   def initWithCoder(c)
-    @device = c.decodeObjectForKey('device')
+    @devices = c.decodeObjectForKey('devices')
     self
-  end
-
-  def position
-    @device.position
-  end
-
-  def rotation
-    @device.rotation
-  end
-
-  def position=(new_position)
-    @device.position = new_position
-  end
-
-  def rotation=(new_rotation)
-    @device.rotation = new_rotation
   end
 
   def refresh

@@ -56,17 +56,17 @@ class RotatableImageController
   end
   
   def shift_by(delta)
-    @floor_plan.position += delta
+    @device.position += delta
   end
   
   def rotation=(rotation)
-    @floor_plan.rotation = rotation
+    @device.rotation = rotation
   end
   
-  def floor_plan=(new_floor_plan)
-    @floor_plan = new_floor_plan
-    @view.setFrameCenterRotation(@floor_plan.rotation)
-    @view.center = @floor_plan.position
+  def device=(new_device)
+    @device = new_device
+    @view.setFrameCenterRotation(@device.rotation)
+    @view.center = @device.position
   end
   
   def mouseEntered(event)
