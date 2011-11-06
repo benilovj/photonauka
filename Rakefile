@@ -60,9 +60,20 @@ module Github
       end
     end
 
+    def issues
+      response = Client.new.get('/issues', :milestone => @number, :state => "closed")
+      response.map {|issue_json| Issue.new(issue_json["number"], issue_json["html_url"], issue_json["title"])}
+    end
+
     def self.create_for_today
       response = Client.new.post('/milestones', :title => Date.today.strftime("%Y-%m-%d"), :due_on => Date.today.iso8601)
       new(response["number"])
+    end
+    
+    def self.todays_milestone
+      response = Client.new.get('/milestones', :state => "closed")
+      milestone_number = response.detect {|milestone_json| milestone_json["title"] == Date.today.strftime("%Y-%m-%d") }["number"]
+      new(milestone_number)
     end
   end
 
@@ -116,19 +127,20 @@ class AppVersion
 end
 
 desc "Get signature for app"
-task :sign => :dmg do
+task :sign do
   @signature = `sparkle_feed/sign_update.rb #{path_to_source_dmg} sparkle_feed/dsa_priv.pem`
   puts "DSA signature for #{path_to_source_dmg}: #{@signature}"
 end
 
 task :create_release_milestone do
   milestone = Github::Milestone.create_for_today
-  @issues = Github::Issue.find_closed_without_milestone
-  milestone.assign_all(@issues)
+  issues = Github::Issue.find_closed_without_milestone
+  milestone.assign_all(issues)
 end
 
-task :release_notes => :create_release_milestone do
-  @release_notes = Github::ReleaseNotes.new(@issues).to_s
+task :release_notes do
+  issues = Github::Milestone.todays_milestone.issues
+  @release_notes = Github::ReleaseNotes.new(issues).to_s
   puts "Release notes: \n" + @release_notes
 end
 
@@ -157,7 +169,7 @@ task :generate_sparkle_feed => [:sign, :release_notes] do
 end
 
 desc "Push a release of the app"
-task :release => [:bump_version, :upload_dmg, :create_release_milestone, :generate_sparkle_feed]
+task :release => [:bump_version, :create_release_milestone, :upload_dmg, :generate_sparkle_feed]
 
 task :dmg => :spec
 
