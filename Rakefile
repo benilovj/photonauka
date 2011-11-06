@@ -13,7 +13,7 @@ def path_to_source_dmg
 end
 
 def target_dmg_name
-  path_to_source_dmg.pathmap("%n") + "-" + AppVersion.new.current_version + '.dmg'
+  path_to_source_dmg.pathmap("%n") + "-" + AppVersion.new.build_version + '.dmg'
 end
 
 def dropbox_public_path
@@ -83,12 +83,12 @@ module Github
       response.map {|issue_json| Issue.new(issue_json["number"], issue_json["html_url"], issue_json["title"]) }
     end
   end
-  
+
   class ReleaseNotes
     def initialize(issues)
       @issues = issues
     end
-    
+
     def to_s
       require 'haml'
       template = File.read('sparkle_feed/release_notes.haml')
@@ -98,31 +98,18 @@ module Github
 end
 
 class AppVersion
-  def bump
-    new_version = replace_patch_number(current_version, Date.today.strftime("%Y%m%d"))
-    File.open(path_to_version_file, "w") do |f|
-      f.puts "module Photonauka"
-      f.puts "  VERSION = '#{new_version}'"
-      f.puts "end"
-    end
+  def build_version
+    appspec.version
   end
 
-  def current_version
-    # suppress warning about redefining the VERSION constant
-    original_verbosity = $VERBOSE
-    $VERBOSE = nil
-    load path_to_version_file
-    $VERBOSE = original_verbosity
-    Photonauka::VERSION
+  def marketing_version
+    appspec.short_version
   end
 
   protected
-  def replace_patch_number(original_version, new_patch_number)
-    (original_version.split(".")[0..1] + [new_patch_number]).join(".")
-  end
-  
-  def path_to_version_file
-    File.join("lib", "photonauka", "version.rb")
+  def appspec
+    appspec_files = FileList["#{Rake.application.original_dir}/*.appspec"]
+    Application::Specification.load appspec_files.first
   end
 end
 
@@ -144,10 +131,6 @@ task :release_notes do
   puts "Release notes: \n" + @release_notes
 end
 
-task :bump_version do
-  AppVersion.new.bump
-end
-
 task :upload_dmg => :dmg do
   cp path_to_source_dmg, File.join(dropbox_public_path, target_dmg_name)
 end
@@ -159,17 +142,18 @@ task :generate_sparkle_feed => [:sign, :release_notes] do
   
   File.open(File.join(dropbox_public_path, "feed.xml"), "w") do |f|
     f << Haml::Engine.new(template).render(Object.new,
-      :release_notes => @release_notes,
-      :release_dmg   => target_dmg_name,
-      :dmg_signature => @signature,
-      :version       => AppVersion.new.current_version,
-      :release_name  => Date.today.strftime("%Y-%m-%d")
+      :release_notes     => @release_notes,
+      :release_dmg       => target_dmg_name,
+      :dmg_signature     => @signature,
+      :build_version     => AppVersion.new.build_version,
+      :marketing_version => AppVersion.new.marketing_version,
+      :release_name      => Date.today.strftime("%Y-%m-%d")
     )
   end
 end
 
 desc "Push a release of the app"
-task :release => [:bump_version, :create_release_milestone, :upload_dmg, :generate_sparkle_feed]
+task :release => [:create_release_milestone, :dmg, :upload_dmg, :generate_sparkle_feed]
 
 task :dmg => :spec
 

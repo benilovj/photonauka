@@ -4,7 +4,7 @@ require 'date'
 Application::Specification.new do |s|
   s.name          = 'Photonauka'
   s.identifier    = 'com.photonauka.LightingSetup'
-  s.version       = `git rev-parse --short HEAD`.strip
+  s.version       = Date.today.strftime("%Y.%m.%d") + "-" + `git rev-parse --short HEAD`.strip
   s.copyright     = "© #{Date.today.year == 2011 ? "2011" : "2011 - #{Date.today.year}"}, Photonauka Ltd"
   s.short_version = Photonauka::VERSION
   s.icon          = 'resources/MainIcon.icns'

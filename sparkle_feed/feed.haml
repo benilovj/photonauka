@@ -11,7 +11,8 @@
           #{release_notes}
       %pubDate= Time.now
       %enclosure{:url => "http://dl.dropbox.com/u/10302128/#{release_dmg}",
-                 "sparkle:version" => version,
+                 "sparkle:version" => build_version,
+                 "sparkle:sparkle:shortVersionString" => marketing_version,
                  "sparkle:dsaSignature" => dmg_signature,
                  :length => "39039802",
                  :type => "application/octet-stream"}
