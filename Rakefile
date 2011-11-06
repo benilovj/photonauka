@@ -156,6 +156,7 @@ task :generate_sparkle_feed => [:sign, :release_notes] do
   end
 end
 
+desc "Push a release of the app"
 task :release => [:bump_version, :upload_dmg, :create_release_milestone, :generate_sparkle_feed]
 
 task :dmg => :spec
