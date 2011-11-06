@@ -1,8 +1,8 @@
-require 'hotcocoa/mappings/appkit/rotatable_image_view'
+require 'lib/hotcocoa/mappings/appkit/rotatable_image_view'
 
-require 'models/floor_plan'
-require 'appkit/rotatable_image_controller'
-require 'appkit/png_images'
+require 'lib/models/floor_plan'
+require 'lib/appkit/rotatable_image_controller'
+require 'lib/appkit/png_images'
 
 class FloorPlanView < NSView
   TRACKPAD_ROTATION_SENSITIVITY = 3

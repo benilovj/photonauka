@@ -1,5 +1,5 @@
-require 'models/floor_plan'
-require 'appkit/project_window_factory'
+require 'lib/models/floor_plan'
+require 'lib/appkit/project_window_factory'
 
 class Project < NSDocument
   attr_accessor :floor_plan

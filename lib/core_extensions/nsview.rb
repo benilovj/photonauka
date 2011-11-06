@@ -1,6 +1,6 @@
 framework 'AppKit'
 
-require 'core_extensions/nspoint'
+require 'lib/core_extensions/nspoint'
 
 class NSView
   include Math

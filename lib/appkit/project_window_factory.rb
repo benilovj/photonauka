@@ -1,4 +1,4 @@
-require 'hotcocoa/mappings/appkit/floor_plan_view'
+require 'lib/hotcocoa/mappings/appkit/floor_plan_view'
 
 class ProjectWindowFactory
   include HotCocoa
