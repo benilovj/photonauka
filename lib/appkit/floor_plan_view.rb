@@ -23,7 +23,7 @@ class FloorPlanView < NSView
   end
 
   def rotateWithEvent(event)
-    selected_image.rotation += TRACKPAD_ROTATION_SENSITIVITY * event.rotation
+    selected_image.rotation += TRACKPAD_ROTATION_SENSITIVITY * event.rotation unless selected_image.nil?
   end
 
   def floor_plan=(floor_plan)
