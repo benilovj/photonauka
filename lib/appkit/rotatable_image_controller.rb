@@ -1,4 +1,5 @@
 require 'lib/core_extensions/nspoint'
+require 'lib/core_extensions/nscursor'
 
 class RotationResponder
   def initialize(controller, view)
@@ -104,6 +105,10 @@ class RotatableImageController
     @rotation_occuring = false
   end
 
+  def rotation_occuring?
+    @rotation_occuring
+  end
+
   protected
   def appropriate_responder
     @rotation_occuring ? @rotation_responder : @dragging_responder
@@ -112,19 +117,9 @@ class RotatableImageController
   def update_cursor
     return if NSCursor.currentCursor.nil?
     case
-    when @rotation_occuring then rotate_cursor.set
+    when @rotation_occuring then NSCursor.rotateCursor.set
     when (@cursor_over_grip and not @mouse_pressed) then NSCursor.openHandCursor.set
     else NSCursor.arrowCursor.set
     end
-  end
-  
-  def rotate_cursor
-    @rotate_cursor ||= load_rotate_cursor
-  end
-  
-  def load_rotate_cursor
-    image_name = NSBundle.mainBundle.pathForResource 'rotate_cursor', ofType:'png'
-    image = NSImage.alloc.initWithContentsOfFile(image_name)
-    NSCursor.alloc.initWithImage(image, hotSpot:[7,7])
   end
 end

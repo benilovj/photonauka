@@ -48,6 +48,10 @@ class FloorPlanView < NSView
     deselect_rotatable_images
   end
 
+  def cursorUpdate(event)
+    rotation_occuring? ? NSCursor.rotateCursor.set : NSCursor.arrowCursor.set
+  end
+
   protected
   def initial_refresh
     @device_controllers = {}
@@ -62,6 +66,10 @@ class FloorPlanView < NSView
 
   def deselect_rotatable_images
     rotatable_images.map(&:deselect)
+  end
+
+  def rotation_occuring?
+    rotatable_images.map(&:delegate).any?(&:rotation_occuring?)
   end
 
   def selected_image
