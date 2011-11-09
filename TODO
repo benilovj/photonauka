@@ -1,4 +1,3 @@
-- get an application name with space working
-- hoverover degrees when rotating
-- project: get an extension when saving project
-- project: set the save menu option disabled when no document is open
+- hover-over degrees when rotating
+- NSArrayController to manage the floorplan?
+- what does the NSObjectController bring?
