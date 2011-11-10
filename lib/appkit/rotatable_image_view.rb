@@ -70,11 +70,11 @@ class RotatableImageView < NSView
   end
   
   def mouseEntered(event)
-    @delegate.mouseEntered(event)
+    @delegate.cursor_over_grip = true
   end
 
   def mouseExited(event)
-    @delegate.mouseExited(event)
+    @delegate.cursor_over_grip = false
   end
 
   def mouseDown(event)
@@ -95,7 +95,7 @@ class RotatableImageView < NSView
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
                                                options: [:mouse_entered_and_exited, :active_in_key_window, :enabled_during_drag],
-                                                 owner: @delegate ))
+                                                 owner: self ))
     end
   end
   

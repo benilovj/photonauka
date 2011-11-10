@@ -56,6 +56,11 @@ class RotatableImageController
     @dragging_responder = DraggingResponder.new(self, new_view)
   end
 
+  def cursor_over_grip=(new_cursor_over_grip)
+    @cursor_over_grip = new_cursor_over_grip
+    update_cursor
+  end
+
   def shift_by(delta)
     @device.position += delta
   end
@@ -71,11 +76,6 @@ class RotatableImageController
   def refresh
     @view.setFrameCenterRotation(@device.rotation)
     @view.center = @device.position
-  end
-
-  def mouseEntered(event)
-    @cursor_over_grip = true
-    update_cursor
   end
 
   def mouseExited(event)
