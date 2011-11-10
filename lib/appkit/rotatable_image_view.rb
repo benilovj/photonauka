@@ -78,15 +78,15 @@ class RotatableImageView < NSView
   end
 
   def mouseDown(event)
-    @delegate.mouseDown(event)
+    @delegate.mouse_down_at(relative_location_of(event))
   end
 
   def mouseDragged(event)
-    @delegate.mouseDragged(event)
+    @delegate.mouse_dragged_at(relative_location_of(event))
   end
 
   def mouseUp(event)
-    @delegate.mouseUp(event)
+    @delegate.mouse_up_at(relative_location_of(event))
   end
   
   protected

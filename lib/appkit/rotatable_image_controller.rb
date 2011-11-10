@@ -7,15 +7,15 @@ class RotationResponder
     @view = view
   end
 
-  def mouseDown(relative_location)
+  def mouse_down_at(relative_location)
     @degrees_between_frame_rotation_and_grip_vector = @view.frameCenterRotation - grip_vector_degrees_given(relative_location)
   end
 
-  def mouseDragged(relative_location)
+  def mouse_dragged_at(relative_location)
     @view.setFrameCenterRotation(grip_vector_degrees_given(relative_location) + @degrees_between_frame_rotation_and_grip_vector)
   end
 
-  def mouseUp(relative_location)
+  def mouse_up_at(relative_location)
     @controller.rotation = grip_vector_degrees_given(relative_location) + @degrees_between_frame_rotation_and_grip_vector
   end
 
@@ -31,17 +31,17 @@ class DraggingResponder
     @view = view
   end
 
-  def mouseDown(relative_location)
+  def mouse_down_at(relative_location)
     @initial_location = relative_location
     @initial_origin = @view.frame.origin
   end
 
-  def mouseDragged(relative_location)
+  def mouse_dragged_at(relative_location)
     delta = relative_location- @initial_location
     @view.setFrameOrigin @initial_origin + delta
   end
 
-  def mouseUp(relative_location)
+  def mouse_up_at(relative_location)
     delta = relative_location - @initial_location
     @controller.shift_by(delta)
   end
@@ -78,29 +78,24 @@ class RotatableImageController
     @view.center = @device.position
   end
 
-  def mouseExited(event)
-    @cursor_over_grip = false
-    update_cursor
-  end
-
-  def mouseDown(event)
+  def mouse_down_at(location)
     @rotation_occuring = @cursor_over_grip
     @mouse_pressed = true
     update_cursor
     view.select
 
-    appropriate_responder.mouseDown(@view.relative_location_of(event))
+    appropriate_responder.mouse_down_at(location)
   end
   
-  def mouseDragged(event)
-    appropriate_responder.mouseDragged(@view.relative_location_of(event))
+  def mouse_dragged_at(location)
+    appropriate_responder.mouse_dragged_at(location)
   end
 
-  def mouseUp(event)
+  def mouse_up_at(location)
     @mouse_pressed = false
     update_cursor
 
-    appropriate_responder.mouseUp(@view.relative_location_of(event))
+    appropriate_responder.mouse_up_at(location)
 
     @rotation_occuring = false
   end
