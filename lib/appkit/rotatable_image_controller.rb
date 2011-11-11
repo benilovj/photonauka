@@ -80,7 +80,6 @@ class RotatableImageController
 
   def mouse_down_at(location)
     @rotation_occuring = @cursor_over_grip
-    @mouse_pressed = true
     update_cursor
     view.select
 
@@ -92,9 +91,7 @@ class RotatableImageController
   end
 
   def mouse_up_at(location)
-    @mouse_pressed = false
     update_cursor
-
     appropriate_responder.mouse_up_at(location)
 
     @rotation_occuring = false
@@ -106,14 +103,14 @@ class RotatableImageController
 
   protected
   def appropriate_responder
-    @rotation_occuring ? @rotation_responder : @dragging_responder
+    rotation_occuring? ? @rotation_responder : @dragging_responder
   end
   
   def update_cursor
     return if NSCursor.currentCursor.nil?
     case
-    when @rotation_occuring then NSCursor.rotateCursor.set
-    when (@cursor_over_grip and not @mouse_pressed) then NSCursor.openHandCursor.set
+    when rotation_occuring? then NSCursor.rotateCursor.set
+    when (not rotation_occuring? and @cursor_over_grip) then NSCursor.openHandCursor.set
     else NSCursor.arrowCursor.set
     end
   end
