@@ -29,8 +29,8 @@ class RotatableImageView < NSView
   end
 
   def delegate=(new_delegate)
-    @delegate = new_delegate
-    @delegate.view = self
+    @presenter = new_delegate
+    @presenter.view = self
   end
 
   def drawRect(rect)
@@ -44,7 +44,7 @@ class RotatableImageView < NSView
 
   def rotation=(rotation)
     setFrameCenterRotation(rotation)
-    @delegate.rotation = rotation
+    @presenter.rotation = rotation
   end
 
   def selected?
@@ -64,48 +64,59 @@ class RotatableImageView < NSView
     @selected = false
     setNeedsDisplay(true)
   end
-  
-  def relative_location_of(event)
-    self.convertPoint(event.locationInWindow, fromView: self)
-  end
-  
+
   def mouseEntered(event)
-    @delegate.cursor_over_grip = true
+    @presenter.cursor_over_grip = true
   end
 
   def mouseExited(event)
-    @delegate.cursor_over_grip = false
+    @presenter.cursor_over_grip = false
   end
 
   def mouseDown(event)
-    @delegate.mouse_down_at(relative_location_of(event))
+    @presenter.mouse_down_at(relative_location_of(event))
+    cursorUpdate(event)
   end
 
   def mouseDragged(event)
-    @delegate.mouse_dragged_at(relative_location_of(event))
+    @presenter.mouse_dragged_at(relative_location_of(event))
   end
 
   def mouseUp(event)
-    @delegate.mouse_up_at(relative_location_of(event))
+    @presenter.mouse_up_at(relative_location_of(event))
+    cursorUpdate(event)
   end
-  
+
+  def cursorUpdate(event)
+    return if NSCursor.currentCursor.nil?
+    case
+    when @presenter.rotation_occuring? then NSCursor.rotateCursor.set
+    when (not @presenter.rotation_occuring? and @presenter.cursor_over_grip) then NSCursor.openHandCursor.set
+    else NSCursor.arrowCursor.set
+    end
+  end
+
   protected
+  def relative_location_of(event)
+    self.convertPoint(event.locationInWindow, fromView: self)
+  end
+
   def define_tracking_areas
     squares = border_corners.map {|point| CGRect.square_with_center(point, side_length: 8*GRIP_RADIUS)}
     for square in squares
       self.addTrackingArea(HotCocoa.tracking_area(rect: square,
-                                               options: [:mouse_entered_and_exited, :active_in_key_window, :enabled_during_drag],
+                                               options: [:mouse_entered_and_exited, :active_in_key_window, :enabled_during_drag, :cursor_update],
                                                  owner: self ))
     end
   end
-  
+
   def draw_image
     @image.drawInRect(bounds.with_inset(IMAGE_INSET),
             fromRect: NSZeroRect,
            operation: NSCompositeSourceOver,
             fraction: 1.0)
   end
-  
+
   def draw_rotation_grips
     border_corners.each {|corner| draw_grip_at(corner) }
   end
