@@ -13,13 +13,13 @@ class RotatableImageView < NSView
   GRIP_RADIUS = 3
   BORDER_INSET = IMAGE_INSET
 
-  attr_accessor :delegate
+  attr_accessor :presenter
 
   def initWithFrame(frame)
     super
     unless self.nil?
       deselect
-      self.delegate = RotatableImageController.new
+      self.presenter = RotatableImageController.new
     end
     self
   end
@@ -28,8 +28,8 @@ class RotatableImageView < NSView
     @image = NSImage.alloc.initWithContentsOfFile filename
   end
 
-  def delegate=(new_delegate)
-    @presenter = new_delegate
+  def presenter=(new_presenter)
+    @presenter = new_presenter
     @presenter.view = self
   end
 

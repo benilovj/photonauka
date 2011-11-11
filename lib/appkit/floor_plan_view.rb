@@ -40,7 +40,7 @@ class FloorPlanView < NSView
 
   def refresh
     initial_refresh if rotatable_images.empty?
-    @device_controllers.values.map(&:refresh)
+    @device_presenters.values.map(&:refresh)
     setNeedsDisplay true
   end
 
@@ -54,13 +54,13 @@ class FloorPlanView < NSView
 
   protected
   def initial_refresh
-    @device_controllers = {}
+    @device_presenters = {}
     @floor_plan.devices.each do |device|
       view = HotCocoa.rotatable_image_view(frame: [0,0,100,100], image_filename: png_filename('zoom_2x2_128_031'))
       addSubview view
       NSNotificationCenter.defaultCenter.addObserver self, selector:'deselect_all_but_selected:', name:ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION, object:view
-      @device_controllers[device] = view.delegate
-      view.delegate.device = device
+      @device_presenters[device] = view.presenter
+      view.presenter.device = device
     end
   end
 
@@ -69,7 +69,7 @@ class FloorPlanView < NSView
   end
 
   def rotation_occuring?
-    rotatable_images.map(&:delegate).any?(&:rotation_occuring?)
+    rotatable_images.map(&:presenter).any?(&:rotation_occuring?)
   end
 
   def selected_image

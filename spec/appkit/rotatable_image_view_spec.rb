@@ -10,7 +10,7 @@ describe RotatableImageView do
     @device = Struct.new(:position, :rotation).new(NSPoint.new(0, 0), 0)
     
     @view = rotatable_image_view(frame: [-10, -5, 20, 10])
-    @view.delegate.device = @device
+    @view.presenter.device = @device
     view(frame: [0, 0, 100, 100]) do |v|
       v << @view
     end
