@@ -5,8 +5,6 @@ require 'lib/core_extensions/cgrect'
 require 'lib/core_extensions/nspoint'
 require 'lib/core_extensions/nsview'
 
-ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION = 'ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION'
-
 class RotatableImageView < NSView
   IMAGE_INSET = 15
 
@@ -18,7 +16,6 @@ class RotatableImageView < NSView
   def initWithFrame(frame)
     super
     unless self.nil?
-      deselect
       self.presenter = RotatableImagePresenter.new
     end
     self
@@ -35,7 +32,7 @@ class RotatableImageView < NSView
 
   def drawRect(rect)
     draw_image
-    draw_rotation_grips if @selected
+    draw_rotation_grips if @presenter.selected?
   end
 
   def rotation
@@ -45,24 +42,6 @@ class RotatableImageView < NSView
   def rotation=(rotation)
     setFrameCenterRotation(rotation)
     @presenter.rotation = rotation
-  end
-
-  def selected?
-    @selected
-  end
-
-  def select
-    define_tracking_areas unless @selected
-    @selected = true
-    NSNotificationCenter.defaultCenter.postNotificationName ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION,
-      object:self, userInfo:nil
-    setNeedsDisplay(true)
-  end
-
-  def deselect
-    self.trackingAreas.each {|area| removeTrackingArea(area)} if @selected
-    @selected = false
-    setNeedsDisplay(true)
   end
 
   def mouseEntered(event)
@@ -75,7 +54,7 @@ class RotatableImageView < NSView
 
   def mouseDown(event)
     @presenter.mouse_down_at(relative_location_of(event))
-    cursorUpdate(event)
+    refresh
   end
 
   def mouseDragged(event)
@@ -87,7 +66,23 @@ class RotatableImageView < NSView
     cursorUpdate(event)
   end
 
+  def refresh
+    update_cursors
+    toggle_tracking_areas
+  end
+
   def cursorUpdate(event)
+    update_cursors
+  end
+
+  protected
+  def toggle_tracking_areas
+    define_tracking_areas if trackingAreas.empty? and @presenter.selected?
+    remove_tracking_areas if not trackingAreas.empty? and not @presenter.selected?
+    setNeedsDisplay(true)
+  end
+
+  def update_cursors
     return if NSCursor.currentCursor.nil?
     case
     when @presenter.rotation_occuring? then NSCursor.rotateCursor.set
@@ -96,7 +91,6 @@ class RotatableImageView < NSView
     end
   end
 
-  protected
   def relative_location_of(event)
     self.convertPoint(event.locationInWindow, fromView: self)
   end
@@ -108,6 +102,10 @@ class RotatableImageView < NSView
                                                options: [:mouse_entered_and_exited, :active_in_key_window, :enabled_during_drag, :cursor_update],
                                                  owner: self ))
     end
+  end
+
+  def remove_tracking_areas
+    self.trackingAreas.each {|area| removeTrackingArea(area)}
   end
 
   def draw_image

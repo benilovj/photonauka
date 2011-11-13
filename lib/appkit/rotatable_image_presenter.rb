@@ -47,9 +47,15 @@ class DraggingResponder
   end
 end
 
+ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION = 'ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION'
+
 class RotatableImagePresenter
   attr_accessor :view
   attr_accessor :cursor_over_grip
+
+  def initialize
+    @selected = false
+  end
 
   def view=(new_view)
     @view = new_view
@@ -74,12 +80,28 @@ class RotatableImagePresenter
     @view.center = @device.position
   end
 
+  def select
+    @selected = true
+    @view.refresh
+    NSNotificationCenter.defaultCenter.postNotificationName ROTATABLE_IMAGE_VIEW_SELECTION_NOTIFICATION,
+        object:self, userInfo:nil
+  end
+
+  def deselect
+    @selected = false
+    @view.refresh
+  end
+
+  def selected?
+    @selected
+  end
+
   def mouse_down_at(location)
     @rotation_occuring = @cursor_over_grip
-    view.select
+    self.select
     appropriate_responder.mouse_down_at(location)
   end
-  
+
   def mouse_dragged_to(location)
     appropriate_responder.mouse_dragged_to(location)
   end

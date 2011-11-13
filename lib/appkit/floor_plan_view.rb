@@ -65,7 +65,7 @@ class FloorPlanView < NSView
   end
 
   def deselect_rotatable_images
-    rotatable_images.map(&:deselect)
+    rotatable_images.map(&:presenter).map(&:deselect)
   end
 
   def rotation_occuring?
