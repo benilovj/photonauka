@@ -5,8 +5,6 @@ require 'lib/appkit/rotatable_image_presenter'
 require 'lib/appkit/png_images'
 
 class FloorPlanView < NSView
-  TRACKPAD_ROTATION_SENSITIVITY = 3
-
   include PngImages
 
   def mouseDown(event)
@@ -16,10 +14,6 @@ class FloorPlanView < NSView
   def drawRect(rect)
     NSColor.colorWithPatternImage(png_file('grid')).setFill
     NSRectFill(bounds)
-  end
-
-  def rotateWithEvent(event)
-    selected_image.rotation += TRACKPAD_ROTATION_SENSITIVITY * event.rotation unless selected_image.nil?
   end
 
   def floor_plan=(floor_plan)
@@ -66,10 +60,6 @@ class FloorPlanView < NSView
 
   def rotation_occuring?
     devices.any?(&:rotation_occuring?)
-  end
-
-  def selected_image
-    devices.detect(&:selected?).view
   end
 
   def deselect_all_but_selected(notification)
