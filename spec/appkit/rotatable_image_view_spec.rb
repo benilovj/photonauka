@@ -2,7 +2,7 @@ require 'spec_helper'
 
 require 'appkit/rotatable_image_view'
 require 'hotcocoa/mappings/appkit/rotatable_image_view'
-require 'appkit/rotatable_image_controller'
+require 'appkit/rotatable_image_presenter'
 
 describe RotatableImageView do
   include HotCocoa

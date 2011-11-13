@@ -11,7 +11,7 @@ class RotationResponder
     @degrees_between_frame_rotation_and_grip_vector = @view.frameCenterRotation - grip_vector_degrees_given(relative_location)
   end
 
-  def mouse_dragged_at(relative_location)
+  def mouse_dragged_to(relative_location)
     @view.setFrameCenterRotation(grip_vector_degrees_given(relative_location) + @degrees_between_frame_rotation_and_grip_vector)
   end
 
@@ -36,7 +36,7 @@ class DraggingResponder
     @initial_origin = @view.frame.origin
   end
 
-  def mouse_dragged_at(relative_location)
+  def mouse_dragged_to(relative_location)
     delta = relative_location- @initial_location
     @view.setFrameOrigin @initial_origin + delta
   end
@@ -47,7 +47,7 @@ class DraggingResponder
   end
 end
 
-class RotatableImageController
+class RotatableImagePresenter
   attr_accessor :view
   attr_accessor :cursor_over_grip
 
@@ -80,8 +80,8 @@ class RotatableImageController
     appropriate_responder.mouse_down_at(location)
   end
   
-  def mouse_dragged_at(location)
-    appropriate_responder.mouse_dragged_at(location)
+  def mouse_dragged_to(location)
+    appropriate_responder.mouse_dragged_to(location)
   end
 
   def mouse_up_at(location)

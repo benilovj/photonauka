@@ -1,3 +1,8 @@
+- investigate whether it's possible to make the rakefile run in both macruby and ruby19
+- move the "selected" attribute to the device presenter
+- split the code, tests into app core and cocoa framework
+  - use a Vector to represent points, add conversion functions to convert between Vector and NSPoint
+
 - hover-over degrees when rotating
 - NSArrayController to manage the floorplan?
 - what does the NSObjectController bring?

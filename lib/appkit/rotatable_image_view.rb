@@ -19,7 +19,7 @@ class RotatableImageView < NSView
     super
     unless self.nil?
       deselect
-      self.presenter = RotatableImageController.new
+      self.presenter = RotatableImagePresenter.new
     end
     self
   end
@@ -79,7 +79,7 @@ class RotatableImageView < NSView
   end
 
   def mouseDragged(event)
-    @presenter.mouse_dragged_at(relative_location_of(event))
+    @presenter.mouse_dragged_to(relative_location_of(event))
   end
 
   def mouseUp(event)
