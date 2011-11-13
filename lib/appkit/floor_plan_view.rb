@@ -18,10 +18,6 @@ class FloorPlanView < NSView
     NSRectFill(bounds)
   end
 
-  def rotation=(rotation)
-    rotatable_images.first.rotation = rotation
-  end
-
   def rotateWithEvent(event)
     selected_image.rotation += TRACKPAD_ROTATION_SENSITIVITY * event.rotation unless selected_image.nil?
   end
