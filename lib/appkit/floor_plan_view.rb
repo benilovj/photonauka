@@ -12,7 +12,7 @@ class FloorPlanView < NSView
   end
 
   def drawRect(rect)
-    NSColor.colorWithPatternImage(png_file('grid')).setFill
+    NSColor.colorWithPatternImage(png_image('grid')).setFill
     NSRectFill(bounds)
   end
 
