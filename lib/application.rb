@@ -8,7 +8,6 @@ end
 framework 'Cocoa'
 framework 'Sparkle'
 
-require 'lib/core_extensions'
 require 'lib/documents/project'
 
 class LightingSetup
