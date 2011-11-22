@@ -131,7 +131,7 @@ task :release_notes do
   puts "Release notes: \n" + @release_notes
 end
 
-task :upload_dmg => :dmg do
+task :upload_dmg do
   cp path_to_source_dmg, File.join(dropbox_public_path, target_dmg_name)
 end
 
