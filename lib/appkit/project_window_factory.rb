@@ -69,39 +69,48 @@ class ProjectWindowFactory
     end
   end
 
-  ITEM_WIDTH = 220
+  DEVICE_CATALOG_PANEL_WIDTH = 220
 
   def make_new_window
-    main_window = window(frame: [@window_cascade_point.x, @window_cascade_point.y, 500, 500], view: :nolayout) do |win|
+    window(frame: [@window_cascade_point.x, @window_cascade_point.y, 700 + DEVICE_CATALOG_PANEL_WIDTH + 20, 700], view: :nolayout) do |win|
       @window_cascade_point = win.cascadeTopLeftFromPoint(@window_cascade_point)
-      win.view = floor_plan_view(auto_resize: [:width, :height]) do |view|
-        view.setWantsLayer(true)
+      
+      win.view = split_view(frame: win.view.bounds, auto_resize: [:width, :height], divider_style: :thin) do |split_view|
+
+        split_view.horizontal = false
+        split_view << floor_plan_view(auto_resize: [:width, :height]) do |view|
+          view.setWantsLayer(true)
+        end
+
+        # TODO: i18nize the window title
+        device_catalog = view(frame: [100, 100, DEVICE_CATALOG_PANEL_WIDTH + 20, 380]) do |subview|
+          chooser = popup(frame: [0, 330, DEVICE_CATALOG_PANEL_WIDTH + 20, 40]) do |popup|
+            popup.items = DEVICE_REPRESENTATIONS.keys
+          end
+          subview << chooser
+          @matrix = matrix_for(DEVICE_REPRESENTATIONS[chooser.items.selected])
+          chooser.on_action do |c|
+            @matrix.removeFromSuperview
+            @matrix = matrix_for(DEVICE_REPRESENTATIONS[c.items.selected])
+            subview << @matrix
+          end
+          subview << @matrix
+        end
+        split_view << device_catalog
+
+        split_view.can_collapse_subview? {|v| v == device_catalog}
+        split_view.should_adjust_size_of_subview? {|v| v != device_catalog}
+        split_view.constrain_min_coordinate_of_subview_with_index {|min_coord, index| win.frame.size.width - DEVICE_CATALOG_PANEL_WIDTH - 30}
+        split_view.constrain_max_coordinate_of_subview_with_index {|max_coord, index| win.frame.size.width - DEVICE_CATALOG_PANEL_WIDTH - 30}
       end
     end
-
-    # TODO: i18nize the window title
-    window(frame: [100, 100, ITEM_WIDTH + 20, 380], view: :nolayout, style: [:titled, :borderless], title: "Devices") do |win|
-      chooser = popup(frame: [0, 330, ITEM_WIDTH + 20, 40]) do |popup|
-        popup.items = DEVICE_REPRESENTATIONS.keys
-      end
-      win << chooser
-      @matrix = matrix_for(DEVICE_REPRESENTATIONS[chooser.items.selected])
-      chooser.on_action do |c|
-        @matrix.removeFromSuperview
-        @matrix = matrix_for(DEVICE_REPRESENTATIONS[c.items.selected])
-        win << @matrix
-      end
-      win << @matrix
-    end
-
-    main_window
   end
 
   def matrix_for(device_representations)
-    scroll_view(frame: [0, 0, ITEM_WIDTH + 20, 320]) do |scroll|
+    scroll_view(frame: [0, 0, DEVICE_CATALOG_PANEL_WIDTH + 20, 320]) do |scroll|
       scroll.horizontal_scroller = false
-      scroll << matrix(frame: [0, 0, ITEM_WIDTH, 40 * device_representations.size + 20], rows: device_representations.size, columns: 1, mode: :radio, cell_class: NSButtonCell) do |matrix|
-        matrix.cell_size = [ITEM_WIDTH, 40]
+      scroll << matrix(frame: [0, 0, DEVICE_CATALOG_PANEL_WIDTH, 40 * device_representations.size + 20], rows: device_representations.size, columns: 1, mode: :radio, cell_class: NSButtonCell) do |matrix|
+        matrix.cell_size = [DEVICE_CATALOG_PANEL_WIDTH, 40]
         (0...device_representations.size).each do |i|
           matrix[i, 0].setImage(png_image(device_representations[i].filename).resized_to(NSMakeSize(40, 40)))
           matrix[i, 0].setTitle(device_representations[i].description)
