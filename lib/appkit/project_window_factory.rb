@@ -27,8 +27,8 @@ end
 
 DEVICE_REPRESENTATIONS = {
   "Models" => [
-    DeviceRepresentation.new(26, "Model (male)"),
-    DeviceRepresentation.new(105, "Model (female)"),
+    DeviceRepresentation.new(26, "Model (boy)"),
+    DeviceRepresentation.new(105, "Model (girl)"),
     DeviceRepresentation.new(27, "Subject"),
     DeviceRepresentation.new(28, "Car"),
     DeviceRepresentation.new(29, "Couch"),
