@@ -48,7 +48,7 @@ DEVICE_REPRESENTATIONS = {
     DeviceRepresentation.new(41, "Beauty Dish"),
     DeviceRepresentation.new(42, "Beauty Dish / Diffuser"),
     DeviceRepresentation.new(43, "On Camera Flash"),
-    DeviceRepresentation.new(132, "Zoom Spot"),
+    DeviceRepresentation.new(133, "Zoom Spot"),
     DeviceRepresentation.new(44, "Ring Flash")]
 }
 
