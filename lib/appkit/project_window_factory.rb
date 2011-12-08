@@ -45,11 +45,6 @@ class ProjectWindowFactory
       
       win.view = split_view(frame: win.view.bounds, auto_resize: [:width, :height], divider_style: :thin) do |split_view|
 
-        split_view.horizontal = false
-        split_view << floor_plan_view(auto_resize: [:width, :height]) do |view|
-          view.setWantsLayer(true)
-        end
-
         # TODO: i18nize the window title
         device_catalog = view(frame: [100, 100, DEVICE_CATALOG_PANEL_WIDTH + 20, 380]) do |subview|
           chooser = popup(frame: [0, 330, DEVICE_CATALOG_PANEL_WIDTH + 20, 40]) do |popup|
@@ -66,10 +61,15 @@ class ProjectWindowFactory
         end
         split_view << device_catalog
 
+        split_view << floor_plan_view(auto_resize: [:width, :height]) do |view|
+          view.setWantsLayer(true)
+        end
+
+        split_view.horizontal = false
         split_view.can_collapse_subview? {|v| v == device_catalog}
         split_view.should_adjust_size_of_subview? {|v| v != device_catalog}
-        split_view.constrain_min_coordinate_of_subview_with_index {|min_coord, index| win.frame.size.width - DEVICE_CATALOG_PANEL_WIDTH - 30}
-        split_view.constrain_max_coordinate_of_subview_with_index {|max_coord, index| win.frame.size.width - DEVICE_CATALOG_PANEL_WIDTH - 30}
+        split_view.constrain_min_coordinate_of_subview_with_index {|min_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 30}
+        split_view.constrain_max_coordinate_of_subview_with_index {|max_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 30}
       end
     end
   end
