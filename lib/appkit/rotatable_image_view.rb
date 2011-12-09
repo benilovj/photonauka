@@ -92,7 +92,7 @@ class RotatableImageView < NSView
   end
 
   def relative_location_of(event)
-    self.convertPoint(event.locationInWindow, fromView: self)
+    superview.convertPoint(event.locationInWindow, fromView: nil)
   end
 
   def define_tracking_areas
