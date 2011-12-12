@@ -46,7 +46,7 @@ class ProjectWindowFactory
       win.view = split_view(frame: win.view.bounds, auto_resize: [:width, :height], divider_style: :thin) do |split_view|
 
         # TODO: i18nize the window title
-        device_catalog = view(frame: [100, 100, DEVICE_CATALOG_PANEL_WIDTH + 20, 380]) do |subview|
+        device_catalog = view(frame: [0, 0, DEVICE_CATALOG_PANEL_WIDTH + 20, 0]) do |subview|
           chooser = popup(frame: [0, 330, DEVICE_CATALOG_PANEL_WIDTH + 20, 40]) do |popup|
             popup.items = DEVICE_REPRESENTATIONS.group_names
           end
@@ -68,8 +68,8 @@ class ProjectWindowFactory
         split_view.horizontal = false
         split_view.can_collapse_subview? {|v| v == device_catalog}
         split_view.should_adjust_size_of_subview? {|v| v != device_catalog}
-        split_view.constrain_min_coordinate_of_subview_with_index {|min_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 30}
-        split_view.constrain_max_coordinate_of_subview_with_index {|max_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 30}
+        split_view.constrain_min_coordinate_of_subview_with_index {|min_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 20}
+        split_view.constrain_max_coordinate_of_subview_with_index {|max_coord, index| DEVICE_CATALOG_PANEL_WIDTH + 20}
       end
     end
   end
