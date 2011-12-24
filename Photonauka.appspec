@@ -11,7 +11,7 @@ Application::Specification.new do |s|
   s.resources     = Dir.glob('resources/**/*.*')
   s.sources       = Dir.glob('lib/**/*.rb')
   s.embed_bs      = true
-  s.overwrite     = true
+  s.overwrite     = false
   s.stdlib        = false
   
   s.declare_doc_type do |doc_type|

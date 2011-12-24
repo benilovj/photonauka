@@ -5,6 +5,8 @@ require 'lib/appkit/rotatable_image_presenter'
 require 'lib/appkit/png_images'
 
 class FloorPlanView < NSView
+  FLOOR_PLAN_VIEW_TAG = 12345
+
   include PngImages
 
   def mouseDown(event)
@@ -12,7 +14,7 @@ class FloorPlanView < NSView
   end
 
   def drawRect(rect)
-    NSColor.colorWithPatternImage(png_file('grid')).setFill
+    NSColor.colorWithPatternImage(png_image('grid')).setFill
     NSRectFill(bounds)
   end
 
@@ -40,6 +42,10 @@ class FloorPlanView < NSView
 
   def cursorUpdate(event)
     rotation_occuring? ? NSCursor.rotateCursor.set : NSCursor.arrowCursor.set
+  end
+
+  def tag
+    FLOOR_PLAN_VIEW_TAG
   end
 
   protected

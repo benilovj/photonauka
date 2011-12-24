@@ -1,4 +1,5 @@
 require 'lib/models/floor_plan'
+require 'lib/appkit/floor_plan_view'
 require 'lib/appkit/project_window_factory'
 
 class Project < NSDocument
@@ -40,6 +41,6 @@ class Project < NSDocument
   protected
   def update_ui_with(view)
     @view = view
-    @view.floor_plan = @floor_plan
+    @view.viewWithTag(FloorPlanView::FLOOR_PLAN_VIEW_TAG).floor_plan = @floor_plan
   end
 end
